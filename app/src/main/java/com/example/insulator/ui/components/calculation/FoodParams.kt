@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.insulator.R
-import com.example.insulator.core.data.ui.Food
+import com.example.insulator.ui.viewModels.calculation.Food
 
 @Composable
 fun FoodParams(

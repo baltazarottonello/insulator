@@ -1,9 +1,8 @@
-package com.example.insulator.core.viewModels
+package com.example.insulator.ui.viewModels.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.insulator.core.data.repositories.IUserRepository
-import com.example.insulator.core.data.ui.AuthenticationUiState
+import com.example.insulator.core.data.repositories.user.IUserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -25,7 +25,6 @@ android {
     }
 
     buildTypes {
-        // TODO : Config ProGuard for release
         release {
             isMinifyEnabled = true
             proguardFiles(
@@ -39,11 +38,13 @@ android {
             val xAppHeader = properties.getProperty("X_APP_HEADER")
             val workerUrl = properties.getProperty("WORKER_URL")
             val authRoute = properties.getProperty("AUTH_ROUTE")
+            val patientsRoute = properties.getProperty("PATIENTS_ROUTE")
 
             buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$clientId\"")
             buildConfigField("String", "X_APP_HEADER", "\"$xAppHeader\"")
             buildConfigField("String", "WORKER_URL", "\"$workerUrl\"")
             buildConfigField("String", "AUTH_ROUTE", "\"$authRoute\"")
+            buildConfigField("String", "PATIENTS_ROUTE", "\"$patientsRoute\"")
         }
 
         debug {
@@ -54,11 +55,13 @@ android {
             val xAppHeader = properties.getProperty("X_APP_HEADER")
             val workerUrl = properties.getProperty("WORKER_URL")
             val authRoute = properties.getProperty("AUTH_ROUTE")
+            val patientsRoute = properties.getProperty("PATIENTS_ROUTE")
 
             buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$clientId\"")
             buildConfigField("String", "X_APP_HEADER", "\"$xAppHeader\"")
             buildConfigField("String", "WORKER_URL", "\"$workerUrl\"")
             buildConfigField("String", "AUTH_ROUTE", "\"$authRoute\"")
+            buildConfigField("String", "PATIENTS_ROUTE", "\"$patientsRoute\"")
         }
     }
     compileOptions {

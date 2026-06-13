@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,11 +20,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.insulator.R
+import com.example.insulator.ui.components.ErrorBox
 import com.example.insulator.ui.theme.InsulatorTheme
 
 @Composable
 fun Authentication(
-    isLoading: Boolean,
     isSuccess: Boolean,
     error: String?,
     onGoogleSignInClick: () -> Unit
@@ -36,9 +34,7 @@ fun Authentication(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (isLoading) {
-            CircularProgressIndicator()
-        } else if (!isSuccess) {
+        if (!isSuccess) {
             Row(horizontalArrangement = Arrangement.SpaceAround) {
                 Button(
                     onClick = onGoogleSignInClick,
@@ -60,8 +56,10 @@ fun Authentication(
             }
         } else null
 
-        error?.let {
-            Text(text = it, color = MaterialTheme.colorScheme.error)
+        error?.let { errorText ->
+            if (error != "") {
+                ErrorBox(text = errorText)
+            } else null
         }
     }
 }
@@ -70,6 +68,6 @@ fun Authentication(
 @Composable
 fun AuthenticationPreview() {
     InsulatorTheme() {
-        Authentication(isLoading = false, error = "", isSuccess = false ,onGoogleSignInClick = {})
+        Authentication(error = "", isSuccess = false, onGoogleSignInClick = {})
     }
 }

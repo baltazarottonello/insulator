@@ -1,4 +1,4 @@
-package com.example.insulator.core.data.ui
+package com.example.insulator.ui.viewModels.calculation
 
 data class Food(
     val id: Int,

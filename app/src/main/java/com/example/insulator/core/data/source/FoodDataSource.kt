@@ -1,6 +1,6 @@
 package com.example.insulator.core.data.source
 
-import com.example.insulator.core.data.ui.Food
+import com.example.insulator.ui.viewModels.calculation.Food
 
 // TODO: Las comidas deben cargarse desde la base de datos
 

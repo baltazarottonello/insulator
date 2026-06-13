@@ -1,4 +1,4 @@
-package com.example.insulator.core.data.repositories
+package com.example.insulator.core.data.repositories.calculation
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -18,7 +18,7 @@ data class UserCalculatorPrefs(
 )
 
 // TODO : interface
-class CalculatorPreferencesRepository(private val dataStore: DataStore<Preferences>) {
+class CalculatorPreferencesRepository(val dataStore: DataStore<Preferences>) {
 
     private companion object {
         val RATIO = stringPreferencesKey("ratio")
