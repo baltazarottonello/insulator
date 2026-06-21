@@ -33,19 +33,22 @@ import com.example.insulator.R
 
 @Composable
 fun PatientSettingsCard(
+    modifier: Modifier = Modifier,
     ratio: String,
-    showRatioError: Boolean,
-    onRatioChange: (String) -> Unit,
+    showRatioError: Boolean = false,
+    onRatioChange: (String) -> Unit = {},
     sensitivity: String,
-    showSensError: Boolean,
-    onSensitivityChange: (String) -> Unit,
+    showSensError: Boolean = false,
+    onSensitivityChange: (String) -> Unit = {},
     targetGlucose: String,
-    showTargetGlucoseError: Boolean,
-    onTargetGlucoseChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    showTargetGlucoseError: Boolean = false,
+    onTargetGlucoseChange: (String) -> Unit = {},
+    enabled: Boolean,
 ) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(bottom = 16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFE9ECEF)),
         shape = RoundedCornerShape(8.dp)
     ) {
@@ -93,7 +96,7 @@ fun PatientSettingsCard(
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
-                    )
+                    ), enabled = enabled
                 )
                 LabeledTextField(
                     label = "SENSIBILIDAD",
@@ -112,7 +115,7 @@ fun PatientSettingsCard(
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
-                    )
+                    ), enabled = enabled
                 )
             }
 
@@ -135,7 +138,7 @@ fun PatientSettingsCard(
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
-                )
+                ), enabled = enabled
             )
         }
     }
@@ -144,8 +147,9 @@ fun PatientSettingsCard(
 @Composable
 fun LabeledTextField(
     modifier: Modifier = Modifier,
+    enabled: Boolean,
     label: String,
-    value: String, onValueChange: (String) -> Unit,
+    value: String, onValueChange: (String) -> Unit = {},
     isError: Boolean,
     supportingText: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -159,6 +163,7 @@ fun LabeledTextField(
         )
         Spacer(modifier = Modifier.height(6.dp))
         OutlinedTextField(
+            enabled = enabled,
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),

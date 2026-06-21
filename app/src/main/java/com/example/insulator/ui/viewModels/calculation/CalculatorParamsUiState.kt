@@ -1,4 +1,4 @@
-package com.example.insulator.core.data.ui
+package com.example.insulator.ui.viewModels.calculation
 
 data class CalculatorParamsUiState(
     val glucose: String = "",
@@ -10,6 +10,8 @@ data class CalculatorParamsUiState(
     val dosis: Float = 0f,
     val dosisCorrection: Float = 0f,
     val foodDosis: Float = 0f,
+    val isLoading : Boolean = false,
+    val isPatient: Boolean = false,
 
     //FORM FIELDS VALIDATION
     val formValidationError : Boolean = true,

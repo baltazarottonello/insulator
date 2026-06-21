@@ -1,11 +1,14 @@
-package com.example.insulator.core.viewModels
+package com.example.insulator.ui.viewModels.calculation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.insulator.core.data.repositories.CalculatorPreferencesRepository
+import com.example.insulator.core.data.dto.patient.ParametersResponse
+import com.example.insulator.core.data.dto.patient.PatientParameters
+import com.example.insulator.core.data.dto.patient.PatientResponse
+import com.example.insulator.core.data.repositories.calculation.CalculatorPreferencesRepository
+import com.example.insulator.core.data.repositories.patients.PatientRepository
+import com.example.insulator.core.data.repositories.user.UserRepository
 import com.example.insulator.core.data.source.FoodDataSource
-import com.example.insulator.core.data.ui.CalculatorParamsUiState
-import com.example.insulator.core.data.ui.Food
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,28 +18,47 @@ import kotlin.math.round
 
 class InsulatorCalculationViewModel(
     private val foodDataSource: FoodDataSource,
-    private val preferencesRepository: CalculatorPreferencesRepository
+    private val preferencesRepository: CalculatorPreferencesRepository,
+    private val userRepository: UserRepository,
+    private val patientRepository: PatientRepository
 ) : ViewModel() {
-
-    init {
-        viewModelScope.launch {
-            preferencesRepository.userPrefsFlow.collect { prefs ->
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        ratio = prefs.ratio,
-                        sensitivity = prefs.sensitivity,
-                        targetGlucose = prefs.targetGlucose
-                    )
-                }
-            }
-        }
-    }
-
     private val _uiState =
         MutableStateFlow(CalculatorParamsUiState(foods = foodDataSource.getAvailableFoods()))
     val uiState: StateFlow<CalculatorParamsUiState> = _uiState.asStateFlow()
 
     val availableFoods = foodDataSource.getAvailableFoods()
+
+    init {
+        _uiState.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            userRepository.userState.collect { user ->
+                if (user.isLogged && user.isPatient) {
+                    val response: ParametersResponse = patientRepository.getParameters()
+                    _uiState.update {
+                        it.copy(
+                            ratio = response.params.ratio.toString(),
+                            sensitivity = response.params.sens.toString(),
+                            targetGlucose = response.params.targetGlucose.toString(),
+                            isPatient = true,
+                            isLoading = false,
+                        )
+                    }
+                } else {
+                    preferencesRepository.userPrefsFlow.collect { prefs ->
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                ratio = prefs.ratio,
+                                sensitivity = prefs.sensitivity,
+                                targetGlucose = prefs.targetGlucose,
+                                isLoading = false
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun onGlucoseChanged(newValue: String) {
         _uiState.update { currentState ->
             currentState.copy(

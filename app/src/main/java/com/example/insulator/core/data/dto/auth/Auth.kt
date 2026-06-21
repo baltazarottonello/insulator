@@ -1,5 +1,6 @@
-package com.example.insulator.core.data.dto
+package com.example.insulator.core.data.dto.auth
 
+import com.example.insulator.core.data.dto.user.UserProfile
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,5 +19,6 @@ data class GoogleLoginResponse(
 data class LoginResponse(
     @SerialName("accessToken") val accessToken: String,
     @SerialName("refreshToken") val refreshToken: String,
-    @SerialName("user") val user: UserProfile
+    @SerialName("user") val user: UserProfile,
+    @SerialName("roles") val roles: List<String>
 )

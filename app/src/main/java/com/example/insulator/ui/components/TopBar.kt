@@ -22,10 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.insulator.R
+import com.example.insulator.ui.routes.AppRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InsulatorTopAppBar(userName: String, profileImageUrl: String) {
+fun InsulatorTopAppBar(currentRoute : String?,userName: String, profileImageUrl: String, onNavigateToProfile:() -> Unit) {
     TopAppBar(
         title = {
             Row(
@@ -43,8 +44,8 @@ fun InsulatorTopAppBar(userName: String, profileImageUrl: String) {
                 )
             }
         }, actions = {
-            if (profileImageUrl != "") {
-                IconButton(onClick = {}) {
+            if (profileImageUrl != "" && currentRoute != AppRoutes.Authentication.name ) {
+                IconButton(onClick = onNavigateToProfile) {
                     AsyncImage(
                         model = profileImageUrl,
                         contentDescription = "Perfil de usuario", onError = {
