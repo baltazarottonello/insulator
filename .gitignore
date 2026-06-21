@@ -6,6 +6,7 @@
 /captures/
 .externalNativeBuild/
 .cxx/
+app/release
 
 # ESTA LÍNEA IGNORA TODA LA CARPETA .idea Y SU CONTENIDO
 .idea/
