@@ -96,7 +96,7 @@ fun PatientSettingsCard(
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
-                    ), enabled = enabled
+                    ), enabled = true //TODO true por default hasta que se implemente de otra manera
                 )
                 LabeledTextField(
                     label = "SENSIBILIDAD",
