@@ -19,5 +19,6 @@ data class CalculatorParamsUiState(
     val showCarbsError : Boolean = false,
     val showRatioError : Boolean = false,
     val showSensError : Boolean = false,
-    val showTargetGlucoseError : Boolean = false
+    val showTargetGlucoseError : Boolean = false,
+    val getParamsError : String = ""
 )

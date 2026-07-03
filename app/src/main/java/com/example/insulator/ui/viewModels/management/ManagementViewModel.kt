@@ -4,15 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.insulator.core.data.internal.constants.Roles
 import com.example.insulator.core.data.repositories.user.IUserRepository
+import com.example.insulator.core.data.repositories.user.SessionManager
 import com.example.insulator.ui.viewModels.UserState
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class ManagementViewModel(private val userRepository: IUserRepository) : ViewModel() {
+class ManagementViewModel(private val _sessionManager: SessionManager) : ViewModel() {
 
-    val userState: StateFlow<UserState> = userRepository.userState;
+    val userState: StateFlow<UserState> = _sessionManager.userState;
 
     private val _uiState: StateFlow<ManagementUiState> = userState
         .map { user ->

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.insulator.ui.components.ErrorBox
 import com.example.insulator.ui.components.calculation.AutoCalculatedParams
 import com.example.insulator.ui.components.calculation.BottomMessage
 import com.example.insulator.ui.components.calculation.DosisCalculation
@@ -58,23 +59,26 @@ fun CalculationScreen(
         if (uiState.isLoading) {
             CircularProgressIndicator()
         } else {
-            PatientSettingsCard(
-                ratio = uiState.ratio,
-                showRatioError = uiState.showRatioError,
-                onRatioChange = { viewModel.onRatioChanged(it) },
-                sensitivity = uiState.sensitivity,
-                showSensError = uiState.showSensError,
-                onSensitivityChange = { viewModel.onSensitivityChanged(it) },
-                targetGlucose = uiState.targetGlucose,
-                showTargetGlucoseError = uiState.showTargetGlucoseError,
-                onTargetGlucoseChange = { viewModel.onTargetGlucoseChanged(it) },
-                enabled = !uiState.isPatient
-            )
+            if (uiState.getParamsError.isEmpty()) {
+                PatientSettingsCard(
+                    ratio = uiState.ratio,
+                    showRatioError = uiState.showRatioError,
+                    onRatioChange = { viewModel.onRatioChanged(it) },
+                    sensitivity = uiState.sensitivity,
+                    showSensError = uiState.showSensError,
+                    onSensitivityChange = { viewModel.onSensitivityChanged(it) },
+                    targetGlucose = uiState.targetGlucose,
+                    showTargetGlucoseError = uiState.showTargetGlucoseError,
+                    onTargetGlucoseChange = { viewModel.onTargetGlucoseChanged(it) },
+                    enabled = !uiState.isPatient
+                )
+                DosisCalculation(handler = { viewModel.onCalculateClicked() })
+            } else {
+                ErrorBox(uiState.getParamsError)
+            }
         }
-
-        DosisCalculation(handler = { viewModel.onCalculateClicked() })
-
         DosisResult(
+            paramsError = uiState.getParamsError,
             dosis = uiState.dosis,
             correction = uiState.dosisCorrection,
             food = uiState.foodDosis,
@@ -82,5 +86,6 @@ fun CalculationScreen(
         )
 
         BottomMessage()
+
     }
 }

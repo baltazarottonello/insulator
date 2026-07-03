@@ -4,6 +4,11 @@ enum class AppRoutes() {
     Authentication,
     Calculation,
     Management,
-    PatientsManagement
+    PatientsManagement,
+
+    SearchPatient,
+
+    MyPatients
 //    Profile,
+
 }
