@@ -6,6 +6,4 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface IUserRepository {
     suspend fun authenticateWithGoogle(idToken: String): Result<LoginResponse>
-
-    val userState: StateFlow<UserState>
 }

@@ -2,6 +2,7 @@ package com.example.insulator.core.services.patient
 
 import com.example.insulator.BuildConfig
 import com.example.insulator.core.data.dto.patient.ParametersResponse
+import com.example.insulator.core.data.dto.patient.PatientCard
 import com.example.insulator.core.data.dto.patient.PatientParameters
 import com.example.insulator.core.data.dto.patient.PatientResponse
 import com.example.insulator.core.data.dto.patient.SetParametersRequest
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.firstOrNull
 class PatientService(
     private val client: HttpClient, private val tokenRepository: TokenRepository
 ) {
+    //USED BY MEDICS
     suspend fun searchPatientByEmail(email: String): Result<PatientResponse> {
         //TODO : Implement Ktor Interceptors for tokens
         return try {
@@ -46,6 +48,30 @@ class PatientService(
         }
     }
 
+    suspend fun getPatients(id: String): Result<List<PatientCard>> {
+        return try {
+            val accessToken = tokenRepository.accessToken.firstOrNull()
+            if (accessToken.isNullOrBlank()) {
+                return Result.failure(Exception("No se encontró un token de sesión válido"))
+            }
+            val response: HttpResponse =
+                client.get(urlString = BuildConfig.WORKER_URL + BuildConfig.MEDIC_ROUTE + "/patients") {
+                    header("X-App", BuildConfig.X_APP_HEADER)
+                    header("Authorization", "Bearer $accessToken")
+                    parameter("id", id)
+                }
+            if (response.status.isSuccess()) {
+                val responseBody: List<PatientCard> = response.body();
+                Result.success(responseBody)
+            } else {
+                Result.failure(Exception("Error al obtener pacientes, paciente no asignado o no existe"))
+            }
+        } catch (e: Exception) {
+            Result.failure(Exception("Error de red: ${e.message}"))
+        }
+    }
+
+    //USED BY PATIENTS
     suspend fun getParameters(): Result<ParametersResponse> {
         return try {
             val accessToken = tokenRepository.accessToken.firstOrNull()

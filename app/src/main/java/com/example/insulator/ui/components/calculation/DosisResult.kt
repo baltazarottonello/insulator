@@ -29,7 +29,13 @@ import com.example.insulator.ui.theme.WarningColor
 import java.util.Locale
 
 @Composable
-fun DosisResult(dosis: Float, correction: Float, food: Float, formValidationError: Boolean) {
+fun DosisResult(
+    dosis: Float,
+    correction: Float,
+    food: Float,
+    formValidationError: Boolean,
+    paramsError: String
+) {
     AnimatedContent(
         targetState = formValidationError,
         transitionSpec = {
@@ -109,17 +115,20 @@ fun DosisResult(dosis: Float, correction: Float, food: Float, formValidationErro
                     .padding(vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    modifier = Modifier.size(20.dp),
-                    painter = painterResource(R.drawable.circle_exclamation_solid_full),
-                    contentDescription = null,
-                    tint = WarningColor
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Hay campos requeridos incompletos",
-                    color = WarningColor
-                )
+                if (paramsError.isEmpty()) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        painter = painterResource(R.drawable.circle_exclamation_solid_full),
+                        contentDescription = null,
+                        tint = WarningColor
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "Hay campos requeridos incompletos",
+                        color = WarningColor
+                    )
+                } else null
             }
         }
     }

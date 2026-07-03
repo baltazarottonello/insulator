@@ -22,7 +22,9 @@ import com.example.insulator.ui.routes.AppRoutes
 import com.example.insulator.ui.screens.AuthenticationScreen
 import com.example.insulator.ui.screens.CalculationScreen
 import com.example.insulator.ui.screens.ManagementScreen
+import com.example.insulator.ui.screens.MyPatientsScreen
 import com.example.insulator.ui.screens.PatientManagementScreen
+import com.example.insulator.ui.screens.SearchPatientScreen
 import com.example.insulator.ui.theme.InsulatorTheme
 import com.example.insulator.ui.viewModels.MainViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -88,7 +90,17 @@ class MainActivity : ComponentActivity() {
                                 })
                             }
                             composable(route = AppRoutes.PatientsManagement.name) {
-                                PatientManagementScreen()
+                                PatientManagementScreen(onNavigateToSearchPatientScreen = {
+                                    navController.navigate(AppRoutes.SearchPatient.name)
+                                }, onNavigateToMyPatientsScreen = {
+                                    navController.navigate(AppRoutes.MyPatients.name)
+                                })
+                            }
+                            composable (route = AppRoutes.SearchPatient.name){
+                                SearchPatientScreen()
+                            }
+                            composable(route = AppRoutes.MyPatients.name){
+                                MyPatientsScreen()
                             }
 //                            composable(route = AppRoutes.Profile.name) {
 //                                UserProfileScreen()

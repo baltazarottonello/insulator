@@ -39,12 +39,14 @@ android {
             val workerUrl = properties.getProperty("WORKER_URL")
             val authRoute = properties.getProperty("AUTH_ROUTE")
             val patientsRoute = properties.getProperty("PATIENTS_ROUTE")
+            val medicRoute = properties.getProperty("MEDIC_ROUTE")
 
             buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$clientId\"")
             buildConfigField("String", "X_APP_HEADER", "\"$xAppHeader\"")
             buildConfigField("String", "WORKER_URL", "\"$workerUrl\"")
             buildConfigField("String", "AUTH_ROUTE", "\"$authRoute\"")
             buildConfigField("String", "PATIENTS_ROUTE", "\"$patientsRoute\"")
+            buildConfigField("String", "MEDIC_ROUTE", "\"$medicRoute\"")
         }
 
         debug {
@@ -56,12 +58,14 @@ android {
             val workerUrl = properties.getProperty("WORKER_URL")
             val authRoute = properties.getProperty("AUTH_ROUTE")
             val patientsRoute = properties.getProperty("PATIENTS_ROUTE")
+            val medicRoute = properties.getProperty("MEDIC_ROUTE")
 
             buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$clientId\"")
             buildConfigField("String", "X_APP_HEADER", "\"$xAppHeader\"")
             buildConfigField("String", "WORKER_URL", "\"$workerUrl\"")
             buildConfigField("String", "AUTH_ROUTE", "\"$authRoute\"")
             buildConfigField("String", "PATIENTS_ROUTE", "\"$patientsRoute\"")
+            buildConfigField("String", "MEDIC_ROUTE", "\"$medicRoute\"")
         }
     }
     compileOptions {
@@ -89,6 +93,7 @@ dependencies {
     implementation("io.ktor:ktor-client-android:2.3.9")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.9")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.9")
+    implementation(libs.androidx.compose.foundation)
     implementation(libs.kotlinx.serialization.json)
     //Navigation
     implementation("androidx.navigation:navigation-compose:2.9.8")
