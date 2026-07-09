@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.insulator.core.data.dto.patient.PatientParameters
 import com.example.insulator.core.data.repositories.patients.PatientRepository
-import com.example.insulator.core.data.repositories.user.SessionManager
+import com.example.insulator.core.data.repositories.user.SessionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,12 +16,12 @@ import kotlinx.coroutines.launch
 
 class MyPatientsViewModel(
     private val _patientRepository: PatientRepository,
-    private val _sessionManager: SessionManager
+    private val _sessionRepository: SessionRepository
 ) : ViewModel() {
 
     private val _myPatientsUiState = MutableStateFlow(MyPatientsUiState());
     val myPatientsUiState: StateFlow<MyPatientsUiState> = _myPatientsUiState.asStateFlow();
-    val userState = _sessionManager.userState
+    val userState = _sessionRepository.userState
 
     init {
         viewModelScope.launch {
@@ -54,7 +54,7 @@ class MyPatientsViewModel(
         }
     }
 
-    fun updatePatient(patient: PatientState) {
+    fun updatePatientParams(patient: PatientParams) {
         viewModelScope.launch {
             _myPatientsUiState.update {
                 it.copy(

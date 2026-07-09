@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.insulator.core.data.repositories.calculation.CalculatorPreferencesRepository
 import com.example.insulator.core.data.repositories.patients.PatientRepository
-import com.example.insulator.core.data.repositories.user.SessionManager
-import com.example.insulator.core.data.repositories.user.UserRepository
+import com.example.insulator.core.data.repositories.user.SessionRepository
 import com.example.insulator.core.data.source.FoodDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +18,7 @@ import kotlin.math.round
 class InsulatorCalculationViewModel(
     private val _foodDataSource: FoodDataSource,
     private val _preferencesRepository: CalculatorPreferencesRepository,
-    private val _sessionManager : SessionManager,
+    private val _sessionRepository : SessionRepository,
     private val _patientRepository: PatientRepository
 ) : ViewModel() {
     private val _uiState =
@@ -31,7 +30,7 @@ class InsulatorCalculationViewModel(
     init {
         viewModelScope.launch {
             combine(
-                _sessionManager.userState,
+                _sessionRepository.userState,
                 _preferencesRepository.userPrefsFlow
             ) { user, prefs ->
                 Pair(user, prefs)

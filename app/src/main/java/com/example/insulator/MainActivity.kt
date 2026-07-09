@@ -23,8 +23,8 @@ import com.example.insulator.ui.screens.AuthenticationScreen
 import com.example.insulator.ui.screens.CalculationScreen
 import com.example.insulator.ui.screens.ManagementScreen
 import com.example.insulator.ui.screens.MyPatientsScreen
+import com.example.insulator.ui.screens.PatientAssignmentScreen
 import com.example.insulator.ui.screens.PatientManagementScreen
-import com.example.insulator.ui.screens.SearchPatientScreen
 import com.example.insulator.ui.theme.InsulatorTheme
 import com.example.insulator.ui.viewModels.MainViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -90,16 +90,16 @@ class MainActivity : ComponentActivity() {
                                 })
                             }
                             composable(route = AppRoutes.PatientsManagement.name) {
-                                PatientManagementScreen(onNavigateToSearchPatientScreen = {
-                                    navController.navigate(AppRoutes.SearchPatient.name)
+                                PatientManagementScreen(onNavigateToPatientAssignmentScreen = {
+                                    navController.navigate(AppRoutes.PatientAssignment.name)
                                 }, onNavigateToMyPatientsScreen = {
                                     navController.navigate(AppRoutes.MyPatients.name)
                                 })
                             }
-                            composable (route = AppRoutes.SearchPatient.name){
-                                SearchPatientScreen()
+                            composable(route = AppRoutes.PatientAssignment.name) {
+                                PatientAssignmentScreen()
                             }
-                            composable(route = AppRoutes.MyPatients.name){
+                            composable(route = AppRoutes.MyPatients.name) {
                                 MyPatientsScreen()
                             }
 //                            composable(route = AppRoutes.Profile.name) {
@@ -112,90 +112,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun InsulatorPreview() {
-//    KoinApplication(application = {
-//        modules(module {
-//
-//            //Data Store
-//            single<DataStore<Preferences>> { androidContext().dataStore }
-//
-//            //HTTP
-//            single {
-//                KtorHttpClient(Android) {
-//                    install(ContentNegotiation) {
-//                        json(Json {
-//                            prettyPrint = true
-//                            isLenient = true
-//                            ignoreUnknownKeys = true
-//                        })
-//                    }
-//                }
-//            }
-//
-//            //viewModels
-//            viewModelOf(::UserProfileViewModel)
-//            viewModelOf(::MainViewModel)
-//            viewModelOf(::InsulatorCalculationViewModel)
-//            viewModelOf(::AuthenticationViewModel)
-//            //Repositories
-//            singleOf(::UserRepository) bind IUserRepository::class
-//            singleOf(::CalculatorPreferencesRepository)
-//            //Services
-//            singleOf(::AuthService) bind IAuthService::class
-//            //DataSource
-//            singleOf(::FoodDataSource)
-//        })
-//    }) {
-//        val viewModel: MainViewModel = koinViewModel()
-//        val userState by viewModel.userState.collectAsStateWithLifecycle()
-//        InsulatorTheme {
-//            val navController = rememberNavController()
-//            Scaffold(
-//                modifier = Modifier.fillMaxSize(), topBar = {
-//                    InsulatorTopAppBar(
-//                        userName = userState.fullName,
-//                        profileImageUrl = userState.avatar,
-//                        onNavigateToProfile = {
-//                            navController.navigate(AppRoutes.Profile.name)
-//                        }
-//                    )
-//                }, bottomBar = {
-//                    if (userState.isLogged) {
-//                        InsulatorBottomBar()
-//                    } else null
-//                }) { innerPadding ->
-//                Surface(
-//                    modifier = Modifier
-//                        .fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    NavHost(
-//                        navController = navController,
-//                        startDestination = AppRoutes.Authentication.name,
-//                        modifier = Modifier.padding(innerPadding)
-//                    ) {
-//                        composable(route = AppRoutes.Authentication.name) {
-//                            AuthenticationScreen(onNavigateToCalculation = {
-//                                navController.navigate(AppRoutes.Calculation.name)
-//                                {
-//                                    popUpTo(
-//                                        AppRoutes.Authentication.name
-//                                    ) { inclusive = true }
-//                                }
-//                            })
-//                        }
-//                        composable(route = AppRoutes.Calculation.name) {
-//                            CalculationScreen()
-//                        }
-//                        composable(route = AppRoutes.Profile.name) {
-//                            UserProfileScreen()
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}

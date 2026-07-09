@@ -1,6 +1,6 @@
 package com.example.insulator.ui.viewModels.management.patients
 
-data class PatientState(
+data class PatientParams(
     val id: String = "",
     val ratio: String = "",
     val sensitivity: String = "",

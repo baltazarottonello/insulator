@@ -1,7 +1,6 @@
 package com.example.insulator
 
 import android.app.Application
-import android.se.omapi.Session
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.example.insulator.core.data.repositories.calculation.CalculatorPreferencesRepository
@@ -9,18 +8,19 @@ import com.example.insulator.core.data.repositories.calculation.dataStore
 import com.example.insulator.core.data.repositories.patients.PatientRepository
 import com.example.insulator.core.data.repositories.tokens.TokenRepository
 import com.example.insulator.core.data.repositories.user.IUserRepository
-import com.example.insulator.core.data.repositories.user.SessionManager
+import com.example.insulator.core.data.repositories.user.SessionRepository
 import com.example.insulator.core.data.repositories.user.UserRepository
 import com.example.insulator.core.data.source.FoodDataSource
 import com.example.insulator.core.services.auth.AuthService
 import com.example.insulator.core.services.auth.IAuthService
 import com.example.insulator.core.services.patient.PatientService
+import com.example.insulator.core.services.user.UserService
 import com.example.insulator.ui.viewModels.MainViewModel
 import com.example.insulator.ui.viewModels.auth.AuthenticationViewModel
 import com.example.insulator.ui.viewModels.calculation.InsulatorCalculationViewModel
 import com.example.insulator.ui.viewModels.management.ManagementViewModel
 import com.example.insulator.ui.viewModels.management.patients.MyPatientsViewModel
-import com.example.insulator.ui.viewModels.management.patients.PatientManagementViewModel
+import com.example.insulator.ui.viewModels.management.patients.SearchUserViewModel
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
@@ -52,23 +52,23 @@ val appModule = module {
     }
 
     //viewModels
-//    viewModelOf(::UserProfileViewModel)
-    viewModelOf(::PatientManagementViewModel)
-    viewModelOf(::ManagementViewModel)
+    //viewModelOf(::UserProfileViewModel)
     viewModelOf(::MainViewModel)
-    viewModelOf(::InsulatorCalculationViewModel)
     viewModelOf(::AuthenticationViewModel)
+    viewModelOf(::InsulatorCalculationViewModel)
+    viewModelOf(::ManagementViewModel)
+    viewModelOf(::SearchUserViewModel)
     viewModelOf(::MyPatientsViewModel)
     //Repositories
-    singleOf(::TokenRepository)
-    singleOf(::PatientRepository)
-    singleOf(::UserRepository) bind IUserRepository::class
     singleOf(::CalculatorPreferencesRepository)
-    //Singletons
-    singleOf(::SessionManager)
+    singleOf(::TokenRepository)
+    singleOf(::UserRepository) bind IUserRepository::class
+    singleOf(::PatientRepository)
+    singleOf(::SessionRepository)
     //Services
     singleOf(::AuthService) bind IAuthService::class
     singleOf(::PatientService)
+    singleOf(::UserService)
     //DataSource
     singleOf(::FoodDataSource)
 }
