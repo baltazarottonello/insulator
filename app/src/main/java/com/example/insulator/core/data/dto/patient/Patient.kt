@@ -21,3 +21,18 @@ data class PatientCard(
     @SerialName("target_glucose") val targetGlucose: Float = 0f,
     @SerialName("created_at") val createdAt: String = ""
 )
+
+@Serializable
+data class PatientParamsHistoryResponse(
+    @SerialName("patientId") val patientId: String = "",
+    @SerialName("history") val history: List<PatientParamsHistoryRow>,
+)
+
+@Serializable
+data class PatientParamsHistoryRow(
+    @SerialName("sensitivity") val sensitivity: Float = 0f,
+    @SerialName("ratio") val ratio: Float = 0f,
+    @SerialName("targetGlucose") val targetGlucose: Float = 0f,
+    @SerialName("createdAt") val createdAt: String = "",
+    @SerialName("isActive") val isActive: Boolean = false,
+)

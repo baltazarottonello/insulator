@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.insulator.R
 import com.example.insulator.core.data.dto.patient.PatientCard
+import com.example.insulator.core.data.dto.patient.PatientParamsHistoryRow
 import com.example.insulator.ui.components.ErrorBox
 import com.example.insulator.ui.components.SuccessMessage
 
@@ -41,10 +43,14 @@ fun PatientCard(
     error: Boolean,
     errorMessage: String,
     updating: Boolean,
+    loadingParamsHistory: Boolean,
+    historyData: List<PatientParamsHistoryRow>,
     patient: PatientCard,
-    onSave: (PatientCard) -> Unit
+    onSave: (PatientCard) -> Unit,
+    onSeePatientParamsHistory: (PatientCard) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var patientCardExpanded by remember { mutableStateOf(false) }
+    var patientParamsHistoryExpanded by remember { mutableStateOf(false) }
 
     var sensitivity by remember { mutableStateOf(patient.sensitivity.toString()) }
     var ratio by remember { mutableStateOf(patient.ratio.toString()) }
@@ -54,13 +60,17 @@ fun PatientCard(
     val isRatioValid = ratio.isNotBlank() && ratio.toFloatOrNull() != null
     val isTargetGlucoseValid = targetGlucose.isNotBlank() && targetGlucose.toFloatOrNull() != null
 
+    val isChanged = (sensitivity.toFloatOrNull() != patient.sensitivity) ||
+            (ratio.toFloatOrNull() != patient.ratio) ||
+            (targetGlucose.toFloatOrNull() != patient.targetGlucose)
+
     val isFormValid = isSensitivityValid && isRatioValid && isTargetGlucoseValid
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { expanded = !expanded },
+            .clickable { patientCardExpanded = !patientCardExpanded },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -79,29 +89,15 @@ fun PatientCard(
                 }
                 Icon(
                     modifier = Modifier.size(25.dp),
-                    painter = if (expanded) painterResource(R.drawable.angle_up_solid_full) else painterResource(
+                    painter = if (patientCardExpanded) painterResource(R.drawable.angle_up_solid_full) else painterResource(
                         R.drawable.angle_down_solid_full
                     ),
                     contentDescription = null
                 )
             }
 
-            AnimatedVisibility(visible = expanded) {
+            AnimatedVisibility(visible = patientCardExpanded) {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
-                    OutlinedTextField(
-                        value = sensitivity,
-                        onValueChange = { sensitivity = it },
-                        label = { Text("Sensibilidad") },
-                        isError = !isSensitivityValid,
-                        supportingText = {
-                            if (!isSensitivityValid) Text("Ingresa un número válido")
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
                     OutlinedTextField(
                         value = ratio,
                         onValueChange = { ratio = it },
@@ -117,9 +113,23 @@ fun PatientCard(
                         modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedTextField(
+                        value = sensitivity,
+                        onValueChange = { sensitivity = it },
+                        label = { Text("Sensibilidad") },
+                        isError = !isSensitivityValid,
+                        supportingText = {
+                            if (!isSensitivityValid) Text("Ingresa un número válido")
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    OutlinedTextField(
                         value = targetGlucose,
                         onValueChange = { targetGlucose = it },
-                        label = { Text("Glucosa Objetivo") },
+                        label = { Text("Glucosa objetivo") },
                         isError = !isTargetGlucoseValid,
                         supportingText = {
                             if (!isTargetGlucoseValid) Text("Ingresa un número válido")
@@ -136,18 +146,25 @@ fun PatientCard(
                     } else if (error) {
                         ErrorBox(errorMessage)
                     } else {
+                        if (!isChanged && isFormValid) {
+                            Text(
+                                text = "Debes modificar al menos un valor para guardar",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
                         Button(
                             onClick = {
-                                if (isFormValid) {
-                                    onSave(
-                                        patient.copy(
-                                            sensitivity = sensitivity.toFloat(),
-                                            ratio = ratio.toFloat(),
-                                            targetGlucose = targetGlucose.toFloat()
-                                        )
+                                onSave(
+                                    patient.copy(
+                                        sensitivity = sensitivity.toFloat(),
+                                        ratio = ratio.toFloat(),
+                                        targetGlucose = targetGlucose.toFloat()
                                     )
-                                }
+                                )
                             },
+                            enabled = isChanged && isFormValid,
                             modifier = Modifier
                                 .padding(top = 8.dp)
                                 .fillMaxWidth()
@@ -159,6 +176,43 @@ fun PatientCard(
                                 )
                             } else {
                                 Text("Guardar cambios")
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.size(16.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                patientParamsHistoryExpanded = !patientParamsHistoryExpanded
+                                if (patientParamsHistoryExpanded && historyData.isEmpty() && !loadingParamsHistory) {
+                                    onSeePatientParamsHistory(patient)
+                                }
+                            },
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Ver historial de parámetros cargados",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Icon(
+                            modifier = Modifier.size(25.dp),
+                            painter = if (patientParamsHistoryExpanded) painterResource(R.drawable.angle_up_solid_full) else painterResource(
+                                R.drawable.angle_down_solid_full
+                            ),
+                            contentDescription = null
+                        )
+                    }
+
+                    AnimatedVisibility(visible = patientParamsHistoryExpanded) {
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            if (loadingParamsHistory) {
+                                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                            } else {
+                                historyData.forEach { row ->
+                                    HistoryRowItem(row)
+                                }
                             }
                         }
                     }

@@ -25,6 +25,7 @@ fun MyPatientsScreen(
     viewModel: MyPatientsViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.myPatientsUiState.collectAsStateWithLifecycle()
+    val paramsHistoryUiState by viewModel.patientParamsHistoryUiState.collectAsStateWithLifecycle()
 
     Scaffold { padding ->
         if (uiState.loading) {
@@ -48,6 +49,7 @@ fun MyPatientsScreen(
                 items(uiState.patients) { patient ->
                     PatientCard(
                         updating = uiState.updating,
+                        loadingParamsHistory = paramsHistoryUiState.isLoading,
                         error = !uiState.error.isEmpty(),
                         errorMessage = uiState.error,
                         patient = patient,
@@ -61,7 +63,9 @@ fun MyPatientsScreen(
                                     updatedPatient.targetGlucose.toString()
                                 )
                             )
-                        }
+                        },
+                        onSeePatientParamsHistory = { patient -> viewModel.loadHistory(patient.id) },
+                        historyData = paramsHistoryUiState.data
                     )
                 }
             }
