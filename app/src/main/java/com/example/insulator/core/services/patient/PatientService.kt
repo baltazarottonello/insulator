@@ -55,7 +55,7 @@ class PatientService(
                 return Result.failure(Exception("No se encontró un token de sesión válido"))
             }
             val response: HttpResponse =
-                client.get(urlString = BuildConfig.WORKER_URL + BuildConfig.MEDIC_ROUTE + "/patients") {
+                client.get(urlString = BuildConfig.WORKER_URL + BuildConfig.MEDICS_ROUTE + "/patients") {
                     header("X-App", BuildConfig.X_APP_HEADER)
                     header("Authorization", "Bearer $accessToken")
                     parameter("id", id)

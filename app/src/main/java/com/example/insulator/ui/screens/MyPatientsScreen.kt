@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.insulator.ui.components.management.patients.PatientCard
 import com.example.insulator.ui.viewModels.management.patients.MyPatientsViewModel
-import com.example.insulator.ui.viewModels.management.patients.PatientState
+import com.example.insulator.ui.viewModels.management.patients.PatientParams
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -53,8 +53,8 @@ fun MyPatientsScreen(
                         patient = patient,
                         updateSuccessful = uiState.updateSuccessful,
                         onSave = { updatedPatient ->
-                            viewModel.updatePatient(
-                                PatientState(
+                            viewModel.updatePatientParams(
+                                PatientParams(
                                     updatedPatient.id,
                                     updatedPatient.ratio.toString(),
                                     updatedPatient.sensitivity.toString(),

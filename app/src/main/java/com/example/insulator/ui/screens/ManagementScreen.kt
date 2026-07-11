@@ -40,6 +40,6 @@ fun ManagementScreen(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.Center
     ) {
-        ManagementDashboard(isMedic = uiState.isMedic, onNavigateToPatientsManagement)
+        ManagementDashboard(onNavigateToPatientsManagement)
     }
 }

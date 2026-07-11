@@ -55,7 +55,7 @@ fun EmailSearchBar(
         OutlinedTextField(
             value = emailText,
             onValueChange = { emailText = it },
-            label = { Text("Introducí el mail de un paciente") },
+            label = { Text("Introducí el mail de un usuario") },
             placeholder = { Text("ejemplo@correo.com") },
             isError = showEmailError,
             singleLine = true,

@@ -6,7 +6,7 @@ enum class AppRoutes() {
     Management,
     PatientsManagement,
 
-    SearchPatient,
+    PatientAssignment,
 
     MyPatients
 //    Profile,
