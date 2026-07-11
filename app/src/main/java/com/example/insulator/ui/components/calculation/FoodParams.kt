@@ -23,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,12 +39,16 @@ import com.example.insulator.ui.viewModels.calculation.Food
 @Composable
 fun FoodParams(
     foodList: List<Food>,
+    searchQuery: String,
+    onQueryChange: (String) -> Unit,
     onFoodClick: (Food) -> Unit,
     onClearClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(bottom = 16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
         shape = RoundedCornerShape(8.dp),
         border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f))
@@ -94,6 +99,20 @@ fun FoodParams(
                         Text(text = "Limpiar", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = onQueryChange,
+                    label = { Text("Buscar alimento...") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            painter = painterResource(R.drawable.magnifying_glass_solid_full),
+                            contentDescription = "Icono de búsqueda"
+                        )
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -103,17 +122,21 @@ fun FoodParams(
                     fontSize = 12.sp
                 )
 
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 LazyColumn(
                     modifier = Modifier.heightIn(max = 300.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(foodList) { food ->
-                        FoodCard(
-                            food = food,
-                            onClick = { onFoodClick(food) }
-                        )
+                    if (foodList.isEmpty()) {
+                        item {
+                            Text("No se encontraron resultados", modifier = Modifier.padding(16.dp))
+                        }
+                    } else {
+                        items(foodList) { food ->
+                            FoodCard(food = food, onClick = { onFoodClick(food) })
+                        }
                     }
                 }
             }
