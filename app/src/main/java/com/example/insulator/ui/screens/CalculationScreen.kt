@@ -30,6 +30,9 @@ fun CalculationScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
 
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val foodList by viewModel.filteredList.collectAsStateWithLifecycle()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,7 +51,9 @@ fun CalculationScreen(
         )
 
         FoodParams(
-            foodList = viewModel.availableFoods,
+            foodList = foodList,
+            searchQuery = searchQuery,
+            onQueryChange = { value -> viewModel.onSearchQueryChange(value) },
             onFoodClick = { food ->
                 viewModel.addCarbsFromFood(food)
             },
