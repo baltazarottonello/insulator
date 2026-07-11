@@ -58,6 +58,9 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(
                                     AppRoutes.Management.name
                                 )
+                            },
+                            onNavigateToCalculation = {
+                                navController.navigate((AppRoutes.Calculation.name))
                             })
                     } else null
                 }) { innerPadding ->

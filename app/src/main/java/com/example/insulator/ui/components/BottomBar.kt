@@ -1,7 +1,6 @@
 package com.example.insulator.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -22,7 +21,8 @@ import com.example.insulator.ui.routes.AppRoutes
 fun InsulatorBottomBar(
     currentRoute: String?,
     roles: List<String>,
-    onNavigateToManagement: () -> Unit
+    onNavigateToManagement: () -> Unit,
+    onNavigateToCalculation: () -> Unit
 ) {
     if (currentRoute != AppRoutes.Authentication.name) {
         BottomAppBar(
@@ -40,19 +40,29 @@ fun InsulatorBottomBar(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
+                    Row(
                         modifier = Modifier.fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         //TODO: use an enum or interface
                         if (roles.contains("ADMINISTRADOR")) {
+                            BottomAppBarCustomNavButton(
+                                text = "Inicio",
+                                resId = R.drawable.house_solid_full,
+                                handler = onNavigateToCalculation
+                            )
                             BottomAppBarCustomNavButton(
                                 text = "Gestión",
                                 resId = R.drawable.users_solid_full,
                                 handler = onNavigateToManagement
                             )
                         } else if (roles.contains("MÉDICO")) {
+                            BottomAppBarCustomNavButton(
+                                text = "Inicio",
+                                resId = R.drawable.house_solid_full,
+                                handler = onNavigateToCalculation
+                            )
                             BottomAppBarCustomNavButton(
                                 text = "Gestión",
                                 resId = R.drawable.users_solid_full,
