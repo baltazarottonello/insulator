@@ -17,17 +17,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.insulator.R
 import com.example.insulator.ui.components.ErrorBox
-import com.example.insulator.ui.theme.InsulatorTheme
 
 @Composable
 fun Authentication(
     isSuccess: Boolean,
     error: String?,
-    onGoogleSignInClick: () -> Unit
+    onGoogleSignInClick: () -> Unit,
+    interactionDisabled: Boolean,
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -41,8 +40,11 @@ fun Authentication(
                     border = BorderStroke(1.dp, Color(0xFF747775)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
-                        contentColor = Color(0xFF1F1F1F)
-                    )
+                        contentColor = Color(0xFF1F1F1F),
+                        disabledContainerColor = Color.LightGray,
+                        disabledContentColor = Color.Gray,
+                    ),
+                    enabled = !interactionDisabled
                 ) {
                     Image(
                         painter = painterResource(R.drawable.google_icon),
@@ -61,13 +63,5 @@ fun Authentication(
                 ErrorBox(text = errorText)
             } else null
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AuthenticationPreview() {
-    InsulatorTheme() {
-        Authentication(error = "", isSuccess = false, onGoogleSignInClick = {})
     }
 }

@@ -22,16 +22,7 @@ fun ManagementScreen(
     viewModel: ManagementViewModel = koinViewModel(),
     onNavigateToPatientsManagement: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-
-//    LaunchedEffect(uiState.isSuccess) {
-//        if (uiState.isSuccess) {
-//            onNavigateToCalculation()
-//        }
-//    }
 
     Column(
         modifier = Modifier

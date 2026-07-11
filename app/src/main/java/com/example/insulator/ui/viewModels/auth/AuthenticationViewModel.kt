@@ -21,10 +21,17 @@ class AuthenticationViewModel(private val userRepository: IUserRepository) : Vie
             val result = userRepository.authenticateWithGoogle(idToken)
 
             if (result.isSuccess) {
-                _uiState.update { it.copy(isLoading = false, isSuccess = true) }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        isSuccess = true,
+                        interactionDisabled = false
+                    )
+                }
             } else {
                 _uiState.update {
                     it.copy(
+                        interactionDisabled = false,
                         isLoading = false,
                         error = "Error al sincronizar con el servidor"
                     )
@@ -34,6 +41,10 @@ class AuthenticationViewModel(private val userRepository: IUserRepository) : Vie
     }
 
     fun onSignInError(message: String) {
-        _uiState.update { it.copy(error = message) }
+        _uiState.update { it.copy(error = message, interactionDisabled = false) }
+    }
+
+    fun onGoogleSignInStarting() {
+        _uiState.update { it.copy(interactionDisabled = true) }
     }
 }

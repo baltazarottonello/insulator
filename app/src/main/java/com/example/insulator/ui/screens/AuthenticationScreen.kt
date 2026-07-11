@@ -84,10 +84,12 @@ fun AuthenticationScreen(
                 ) {
                     Authentication(
                         isSuccess = uiState.isSuccess,
+                        interactionDisabled = uiState.interactionDisabled,
                         error = uiState.error,
                         onGoogleSignInClick = {
                             coroutineScope.launch {
                                 try {
+                                    viewModel.onGoogleSignInStarting()
                                     val credentialManager = CredentialManager.create(context)
 
                                     val googleIdOption =
