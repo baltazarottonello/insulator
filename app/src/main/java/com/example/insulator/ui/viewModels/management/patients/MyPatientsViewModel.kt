@@ -20,7 +20,10 @@ class MyPatientsViewModel(
 ) : ViewModel() {
 
     private val _myPatientsUiState = MutableStateFlow(MyPatientsUiState());
+    private val _patientParamsHistoryUiState = MutableStateFlow(PatientParamsHistoryState());
     val myPatientsUiState: StateFlow<MyPatientsUiState> = _myPatientsUiState.asStateFlow();
+    val patientParamsHistoryUiState: StateFlow<PatientParamsHistoryState> =
+        _patientParamsHistoryUiState.asStateFlow();
     val userState = _sessionRepository.userState
 
     init {
@@ -51,6 +54,30 @@ class MyPatientsViewModel(
             }.onFailure { error ->
                 _myPatientsUiState.update { it.copy(loading = false, error = error.message!!) }
             }
+        }
+    }
+
+    fun loadHistory(patientId: String) {
+        viewModelScope.launch {
+            _patientParamsHistoryUiState.update { it.copy(isLoading = true, error = "") }
+
+            val response = _patientRepository.getPatientHistory(patientId).onSuccess { data ->
+                _patientParamsHistoryUiState.update {
+                    it.copy(
+                        data = data.history,
+                        isLoading = false,
+                        error = ""
+                    )
+                }
+            }.onFailure { error ->
+                _patientParamsHistoryUiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = error.message!!
+                    )
+                }
+            }
+
         }
     }
 

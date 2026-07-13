@@ -4,6 +4,7 @@ import com.example.insulator.BuildConfig
 import com.example.insulator.core.data.dto.patient.ParametersResponse
 import com.example.insulator.core.data.dto.patient.PatientCard
 import com.example.insulator.core.data.dto.patient.PatientParameters
+import com.example.insulator.core.data.dto.patient.PatientParamsHistoryResponse
 import com.example.insulator.core.data.dto.patient.PatientResponse
 import com.example.insulator.core.data.dto.patient.SetParametersRequest
 import com.example.insulator.core.data.repositories.tokens.TokenRepository
@@ -118,6 +119,29 @@ class PatientService(
                 }
             if (response.status.isSuccess()) {
                 Result.success(Unit)
+            } else {
+                Result.failure(Exception("Error al obtener parámetros del paciente"))
+            }
+        } catch (e: Exception) {
+            Result.failure(Exception("Error de red: ${e.message}"))
+        }
+    }
+
+    suspend fun getHistory(id: String): Result<PatientParamsHistoryResponse> {
+        return try {
+            val accessToken = tokenRepository.accessToken.firstOrNull()
+            if (accessToken.isNullOrBlank()) {
+                return Result.failure(Exception("No se encontró un token de sesión válido"))
+            }
+            val response: HttpResponse =
+                client.get(urlString = BuildConfig.WORKER_URL + BuildConfig.MEDICS_ROUTE + "/patient" + "/params-history") {
+                    header("X-App", BuildConfig.X_APP_HEADER)
+                    header("Authorization", "Bearer $accessToken")
+                    parameter("id", id)
+                }
+            if (response.status.isSuccess()) {
+                val responseBody: PatientParamsHistoryResponse = response.body();
+                Result.success(responseBody)
             } else {
                 Result.failure(Exception("Error al obtener parámetros del paciente"))
             }
