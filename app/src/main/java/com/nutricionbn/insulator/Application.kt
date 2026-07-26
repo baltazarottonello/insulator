@@ -3,10 +3,11 @@ package com.nutricionbn.insulator
 import android.app.Application
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.nutricionbn.insulator.core.data.repositories.calculation.CalculationSnapshotRepository
 import com.nutricionbn.insulator.core.data.repositories.calculation.CalculatorPreferencesRepository
-import com.nutricionbn.insulator.core.data.repositories.calculation.dataStore
 import com.nutricionbn.insulator.core.data.repositories.patients.PatientRepository
 import com.nutricionbn.insulator.core.data.repositories.tokens.TokenRepository
+import com.nutricionbn.insulator.core.data.repositories.tokens.authPrefsDataStore
 import com.nutricionbn.insulator.core.data.repositories.user.IUserRepository
 import com.nutricionbn.insulator.core.data.repositories.user.SessionRepository
 import com.nutricionbn.insulator.core.data.repositories.user.UserRepository
@@ -17,7 +18,7 @@ import com.nutricionbn.insulator.core.services.patient.PatientService
 import com.nutricionbn.insulator.core.services.user.UserService
 import com.nutricionbn.insulator.ui.viewModels.MainViewModel
 import com.nutricionbn.insulator.ui.viewModels.auth.AuthenticationViewModel
-import com.nutricionbn.insulator.ui.viewModels.calculation.InsulatorCalculationViewModel
+import com.nutricionbn.insulator.ui.viewModels.calculation.CalculationViewModel
 import com.nutricionbn.insulator.ui.viewModels.management.ManagementViewModel
 import com.nutricionbn.insulator.ui.viewModels.management.patients.MyPatientsViewModel
 import com.nutricionbn.insulator.ui.viewModels.management.patients.SearchUserViewModel
@@ -29,6 +30,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import io.ktor.client.HttpClient as KtorHttpClient
@@ -36,7 +38,7 @@ import io.ktor.client.HttpClient as KtorHttpClient
 val appModule = module {
 
     //Data Store
-    single<DataStore<Preferences>> { androidContext().dataStore }
+    single<DataStore<Preferences>>(named("authPrefsDataStore")) { androidContext().authPrefsDataStore }
 
     //HTTP
     single {
@@ -55,13 +57,18 @@ val appModule = module {
     //viewModelOf(::UserProfileViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::AuthenticationViewModel)
-    viewModelOf(::InsulatorCalculationViewModel)
+    viewModelOf(::CalculationViewModel)
     viewModelOf(::ManagementViewModel)
     viewModelOf(::SearchUserViewModel)
     viewModelOf(::MyPatientsViewModel)
     //Repositories
+    singleOf(::CalculationSnapshotRepository)
     singleOf(::CalculatorPreferencesRepository)
-    singleOf(::TokenRepository)
+    single {
+        TokenRepository(
+            authPrefsDataStore = get(named("authPrefsDataStore"))
+        )
+    }
     singleOf(::UserRepository) bind IUserRepository::class
     singleOf(::PatientRepository)
     singleOf(::SessionRepository)

@@ -61,9 +61,12 @@ fun PatientAssignmentScreen(viewModel: SearchUserViewModel = koinViewModel()) {
             )
         } else if (uiState.error != "") {
             ErrorBox(uiState.error!!)
-        } else if (uiState.isSuccess) {
+        } else if (uiState.patientAssignmentSuccess) {
             SuccessMessage(
-                text = "Paciente asignado con éxito"
+                text = "Paciente asignado con éxito",
+                onDismiss = {
+                    viewModel.dismissSuccessMessage { it.copy(patientAssignmentSuccess = false) }
+                }
             )
         }
     }

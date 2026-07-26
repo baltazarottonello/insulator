@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     if (userState.isLogged) {
                         InsulatorBottomBar(
                             currentRoute = currentRoute,
-                            roles = userState.roles,
+                            user = userState,
                             onNavigateToManagement = {
                                 navController.navigate(
                                     AppRoutes.Management.name

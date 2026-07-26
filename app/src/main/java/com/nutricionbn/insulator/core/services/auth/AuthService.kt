@@ -32,7 +32,7 @@ class AuthService(
                 Result.failure(Exception("Error de servidor: código ${response.status.value}"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de conexión"))
         }
     }
 }

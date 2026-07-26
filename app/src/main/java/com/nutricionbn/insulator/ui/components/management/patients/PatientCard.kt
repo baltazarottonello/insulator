@@ -2,6 +2,7 @@ package com.nutricionbn.insulator.ui.components.management.patients
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,24 +34,30 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.nutricionbn.insulator.R
 import com.nutricionbn.insulator.core.data.dto.patient.PatientCard
+import com.nutricionbn.insulator.core.data.dto.patient.PatientDoseHistoryRow
 import com.nutricionbn.insulator.core.data.dto.patient.PatientParamsHistoryRow
 import com.nutricionbn.insulator.ui.components.ErrorBox
 import com.nutricionbn.insulator.ui.components.SuccessMessage
 
 @Composable
 fun PatientCard(
-    updateSuccessful: Boolean,
+    paramsUpdateSuccessful: Boolean,
     error: Boolean,
     errorMessage: String,
-    updating: Boolean,
+    updatingParams: Boolean,
     loadingParamsHistory: Boolean,
-    historyData: List<PatientParamsHistoryRow>,
+    loadingDosesHistory: Boolean,
+    paramsHistoryData: List<PatientParamsHistoryRow>,
+    dosesHistoryData: List<PatientDoseHistoryRow>,
     patient: PatientCard,
     onSave: (PatientCard) -> Unit,
-    onSeePatientParamsHistory: (PatientCard) -> Unit
+    onSeePatientParamsHistory: (PatientCard) -> Unit,
+    onSeePatientDosesHistory: (PatientCard) -> Unit,
+    onDismissParamsUpdateSuccessful: () -> Unit,
 ) {
     var patientCardExpanded by remember { mutableStateOf(false) }
     var patientParamsHistoryExpanded by remember { mutableStateOf(false) }
+    var patientDosesHistoryExpanded by remember { mutableStateOf(false) }
 
     var sensitivity by remember { mutableStateOf(patient.sensitivity.toString()) }
     var ratio by remember { mutableStateOf(patient.ratio.toString()) }
@@ -66,11 +73,18 @@ fun PatientCard(
 
     val isFormValid = isSensitivityValid && isRatioValid && isTargetGlucoseValid
 
+    val interactionSource = remember { MutableInteractionSource() }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { patientCardExpanded = !patientCardExpanded },
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                patientCardExpanded = !patientCardExpanded
+            },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = RoundedCornerShape(12.dp)
     ) {
@@ -141,8 +155,11 @@ fun PatientCard(
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    if (updateSuccessful) {
-                        SuccessMessage("Parámetros cargados con éxito!")
+                    if (paramsUpdateSuccessful) {
+                        SuccessMessage(
+                            "Parámetros cargados con éxito!",
+                            onDismiss = onDismissParamsUpdateSuccessful
+                        )
                     } else if (error) {
                         ErrorBox(errorMessage)
                     } else {
@@ -169,7 +186,7 @@ fun PatientCard(
                                 .padding(top = 8.dp)
                                 .fillMaxWidth()
                         ) {
-                            if (updating) {
+                            if (updatingParams) {
                                 CircularProgressIndicator(
                                     color = Color.White,
                                     modifier = Modifier.size(20.dp)
@@ -185,7 +202,7 @@ fun PatientCard(
                             .fillMaxWidth()
                             .clickable {
                                 patientParamsHistoryExpanded = !patientParamsHistoryExpanded
-                                if (patientParamsHistoryExpanded && historyData.isEmpty() && !loadingParamsHistory) {
+                                if (patientParamsHistoryExpanded && paramsHistoryData.isEmpty() && !loadingParamsHistory) {
                                     onSeePatientParamsHistory(patient)
                                 }
                             },
@@ -210,8 +227,47 @@ fun PatientCard(
                             if (loadingParamsHistory) {
                                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                             } else {
-                                historyData.forEach { row ->
-                                    HistoryRowItem(row)
+                                paramsHistoryData.forEach { row ->
+                                    ParamsHistoryRowItem(row)
+                                }
+                            }
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                patientDosesHistoryExpanded = !patientDosesHistoryExpanded
+                                if (patientDosesHistoryExpanded && dosesHistoryData.isEmpty() && !loadingDosesHistory) {
+                                    onSeePatientDosesHistory(patient)
+                                }
+                            },
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Ver historial de dosis",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Icon(
+                            modifier = Modifier.size(25.dp),
+                            painter = if (patientDosesHistoryExpanded) painterResource(R.drawable.angle_up_solid_full) else painterResource(
+                                R.drawable.angle_down_solid_full
+                            ),
+                            contentDescription = null
+                        )
+                    }
+
+                    AnimatedVisibility(visible = patientDosesHistoryExpanded) {
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            if (loadingDosesHistory) {
+                                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                            } else {
+                                dosesHistoryData.forEach { row ->
+                                    DoseHistoryRowItem(
+                                        item = row
+                                    )
                                 }
                             }
                         }

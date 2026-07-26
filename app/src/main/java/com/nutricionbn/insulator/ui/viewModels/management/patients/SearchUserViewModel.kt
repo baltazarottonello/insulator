@@ -65,13 +65,12 @@ class SearchUserViewModel(
     }
 
     fun onAssignAsPatient(user: AssignableUser) {
-        //TODO 10/07/26
         viewModelScope.launch {
             _searchUserUiState.update {
                 it.copy(
                     assigningPatient = true,
                     error = "",
-                    isSuccess = false
+                    patientAssignmentSuccess = false
                 )
             }
             _userRepository.assignAsAPatient(user).onSuccess {
@@ -80,7 +79,7 @@ class SearchUserViewModel(
                         userLoaded = false,
                         assigningPatient = false,
                         error = "",
-                        isSuccess = true
+                        patientAssignmentSuccess = true
                     )
                 }
             }.onFailure { error ->
@@ -89,10 +88,14 @@ class SearchUserViewModel(
                         userLoaded = false,
                         assigningPatient = false,
                         error = if (error.message.isNullOrEmpty()) "Error inesperado" else error.message,
-                        isSuccess = false
+                        patientAssignmentSuccess = false
                     )
                 }
             }
         }
+    }
+
+    fun dismissSuccessMessage(updateState: (SearchUserUiState) -> SearchUserUiState) {
+        _searchUserUiState.update(updateState)
     }
 }

@@ -25,3 +25,17 @@ data class AssignUserAsPatientRequest(
     val userId: String,
     val hasBeenPatient: Boolean,
 )
+
+@Serializable
+data class DoseUploadRequest(
+    val bloodGlucose: Float,
+    val carbs: Float,
+    val ratio: Float,
+    val sensitivity: Float,
+    val targetGlucose: Float,
+    val doseCorrection: Float,
+    val foodDose: Float,
+    val dose: Float,
+    val observations: String?,
+    val createdAt: String
+)

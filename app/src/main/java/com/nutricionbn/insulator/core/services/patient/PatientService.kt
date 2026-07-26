@@ -3,6 +3,7 @@ package com.nutricionbn.insulator.core.services.patient
 import com.nutricionbn.insulator.BuildConfig
 import com.nutricionbn.insulator.core.data.dto.patient.ParametersResponse
 import com.nutricionbn.insulator.core.data.dto.patient.PatientCard
+import com.nutricionbn.insulator.core.data.dto.patient.PatientDosesHistoryResponse
 import com.nutricionbn.insulator.core.data.dto.patient.PatientParameters
 import com.nutricionbn.insulator.core.data.dto.patient.PatientParamsHistoryResponse
 import com.nutricionbn.insulator.core.data.dto.patient.PatientResponse
@@ -127,7 +128,7 @@ class PatientService(
         }
     }
 
-    suspend fun getHistory(id: String): Result<PatientParamsHistoryResponse> {
+    suspend fun getParamsHistory(id: String): Result<PatientParamsHistoryResponse> {
         return try {
             val accessToken = tokenRepository.accessToken.firstOrNull()
             if (accessToken.isNullOrBlank()) {
@@ -143,7 +144,30 @@ class PatientService(
                 val responseBody: PatientParamsHistoryResponse = response.body();
                 Result.success(responseBody)
             } else {
-                Result.failure(Exception("Error al obtener parámetros del paciente"))
+                Result.failure(Exception("Error al obtener historial de parámetros del paciente"))
+            }
+        } catch (e: Exception) {
+            Result.failure(Exception("Error de red: ${e.message}"))
+        }
+    }
+
+    suspend fun getDosesHistory(id: String): Result<PatientDosesHistoryResponse> {
+        return try {
+            val accessToken = tokenRepository.accessToken.firstOrNull()
+            if (accessToken.isNullOrBlank()) {
+                return Result.failure(Exception("No se encontró un token de sesión válido"))
+            }
+            val response: HttpResponse =
+                client.get(urlString = BuildConfig.WORKER_URL + BuildConfig.MEDICS_ROUTE + "/patient" + "/dose-history") {
+                    header("X-App", BuildConfig.X_APP_HEADER)
+                    header("Authorization", "Bearer $accessToken")
+                    parameter("id", id)
+                }
+            if (response.status.isSuccess()) {
+                val responseBody: PatientDosesHistoryResponse = response.body();
+                Result.success(responseBody)
+            } else {
+                Result.failure(Exception("Error al obtener historial de dosis del paciente"))
             }
         } catch (e: Exception) {
             Result.failure(Exception("Error de red: ${e.message}"))

@@ -3,6 +3,7 @@ package com.nutricionbn.insulator.core.services.user
 import com.nutricionbn.insulator.BuildConfig
 import com.nutricionbn.insulator.core.data.dto.user.AssignUserAsPatientRequest
 import com.nutricionbn.insulator.core.data.dto.user.AssignableUserResponse
+import com.nutricionbn.insulator.core.data.dto.user.DoseUploadRequest
 import com.nutricionbn.insulator.core.data.repositories.tokens.TokenRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -70,8 +71,32 @@ class UserService(
                 Result.failure(Exception("Error al asignar usuario como paciente"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception())
+            Result.failure(Exception("Error de conexión"))
+        }
+    }
+
+    suspend fun uploadDose(doseData: DoseUploadRequest): Result<Any> {
+        return try {
+            val accessToken = tokenRepository.accessToken.firstOrNull()
+            if (accessToken.isNullOrBlank()) {
+                return Result.failure(Exception("No se encontró un token de sesión válido"))
+            }
+            val response: HttpResponse =
+                client.post(urlString = BuildConfig.WORKER_URL + "/user" + "/dose") {
+                    contentType(ContentType.Application.Json)
+                    header("X-App", BuildConfig.X_APP_HEADER)
+                    header("Authorization", "Bearer $accessToken")
+                    setBody(doseData)
+                }
+            if (response.status.isSuccess()) {
+                return Result.success(true)
+            } else {
+                Result.failure(Exception("Error al cargar dosis"))
+            }
+        } catch (e: Exception) {
+            Result.failure(Exception("Error de conexión"))
         }
     }
 }
+
 

@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,14 +25,26 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nutricionbn.insulator.R
+import kotlinx.coroutines.delay
 
 @Composable
-fun SuccessMessage(text: String, subtitle: String? = null) {
+fun SuccessMessage(
+    text: String,
+    subtitle: String? = null,
+    durationMillis: Long = 2000L,
+    onDismiss: () -> Unit
+) {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
+
+        LaunchedEffect(Unit) {
+            delay(durationMillis)
+            onDismiss()
+        }
+
         Column(
             modifier = Modifier
                 .padding(vertical = 24.dp, horizontal = 16.dp)

@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PatientResponse(
     @SerialName("parameters") val params: PatientParameters,
-    @SerialName("patientId") val id : String,
+    @SerialName("patientId") val id: String,
 )
 
 
@@ -35,4 +35,25 @@ data class PatientParamsHistoryRow(
     @SerialName("targetGlucose") val targetGlucose: Float = 0f,
     @SerialName("createdAt") val createdAt: String = "",
     @SerialName("isActive") val isActive: Boolean = false,
+)
+
+@Serializable
+data class PatientDosesHistoryResponse(
+    @SerialName("userId") val userId: String = "",
+    @SerialName("patientId") val patientId: String = "",
+    @SerialName("history") val history: List<PatientDoseHistoryRow>,
+)
+
+@Serializable
+data class PatientDoseHistoryRow(
+    @SerialName("bloodGlucose") val bloodGlucose: Float = 0f,
+    @SerialName("carbs") val carbs: Float = 0f,
+    @SerialName("ratio") val ratio: Float = 0f,
+    @SerialName("sensitivity") val sensitivity: Float = 0f,
+    @SerialName("targetGlucose") val targetGlucose: Float = 0f,
+    @SerialName("doseCorrection") val doseCorrection: Float = 0f,
+    @SerialName("foodDose") val foodDose: Float = 0f,
+    @SerialName("dose") val dose: Float = 0f,
+    @SerialName("observations") val observations: String? = null,
+    @SerialName("createdAt") val createdAt: String = "",
 )

@@ -19,11 +19,8 @@ class MyPatientsViewModel(
     private val _sessionRepository: SessionRepository
 ) : ViewModel() {
 
-    private val _myPatientsUiState = MutableStateFlow(MyPatientsUiState());
-    private val _patientParamsHistoryUiState = MutableStateFlow(PatientParamsHistoryState());
-    val myPatientsUiState: StateFlow<MyPatientsUiState> = _myPatientsUiState.asStateFlow();
-    val patientParamsHistoryUiState: StateFlow<PatientParamsHistoryState> =
-        _patientParamsHistoryUiState.asStateFlow();
+    private val _myPatientsUiState = MutableStateFlow(MyPatientsUiState())
+    val myPatientsUiState: StateFlow<MyPatientsUiState> = _myPatientsUiState.asStateFlow()
     val userState = _sessionRepository.userState
 
     init {
@@ -39,45 +36,163 @@ class MyPatientsViewModel(
         }
     }
 
+    fun dismissSuccessMessage(updateState: (MyPatientsUiState) -> MyPatientsUiState) {
+        _myPatientsUiState.update(updateState)
+    }
+
     fun loadPatients(id: String) {
         viewModelScope.launch {
-            _myPatientsUiState.update { it.copy(loading = true, error = "") }
+            _myPatientsUiState.update { it.copy(loadingPatients = true, error = "") }
             _patientRepository.getPatients(id).onSuccess { data ->
                 _myPatientsUiState.update {
                     it.copy(
                         patients = data,
                         patientsLoaded = true,
-                        loading = false,
+                        loadingPatients = false,
                         error = ""
                     )
                 }
             }.onFailure { error ->
-                _myPatientsUiState.update { it.copy(loading = false, error = error.message!!) }
-            }
-        }
-    }
-
-    fun loadHistory(patientId: String) {
-        viewModelScope.launch {
-            _patientParamsHistoryUiState.update { it.copy(isLoading = true, error = "") }
-
-            val response = _patientRepository.getPatientHistory(patientId).onSuccess { data ->
-                _patientParamsHistoryUiState.update {
+                _myPatientsUiState.update {
                     it.copy(
-                        data = data.history,
-                        isLoading = false,
-                        error = ""
-                    )
-                }
-            }.onFailure { error ->
-                _patientParamsHistoryUiState.update {
-                    it.copy(
-                        isLoading = false,
+                        loadingPatients = false,
                         error = error.message!!
                     )
                 }
             }
+        }
+    }
 
+    fun loadParamsHistory(patientId: String) {
+        viewModelScope.launch {
+            _myPatientsUiState.update { currentState ->
+                val existingList = currentState.paramsHistoryData.toMutableList()
+                val index = existingList.indexOfFirst { it.patientId == patientId }
+
+                val loadingState = if (index != -1) {
+                    existingList[index].copy(isLoading = true, error = "")
+                } else {
+                    PatientParamsHistoryState(patientId = patientId, isLoading = true, error = "")
+                }
+
+                if (index != -1) {
+                    existingList[index] = loadingState
+                } else {
+                    existingList.add(loadingState)
+                }
+
+                currentState.copy(paramsHistoryData = existingList)
+            }
+
+
+            _patientRepository.getPatientParamsHistory(patientId).onSuccess { data ->
+                val updatedParamsHistoryState = PatientParamsHistoryState(
+                    patientId = patientId,
+                    data = data.history,
+                    isLoading = false,
+                    error = ""
+                )
+
+                _myPatientsUiState.update { currentState ->
+                    val existingList = currentState.paramsHistoryData.toMutableList()
+                    val index = existingList.indexOfFirst { it.patientId == patientId }
+
+                    if (index != -1) {
+                        existingList[index] = updatedParamsHistoryState
+                    } else {
+                        existingList.add(updatedParamsHistoryState)
+                    }
+
+                    currentState.copy(paramsHistoryData = existingList)
+                }
+            }.onFailure { error ->
+                val errorMessage = error.message ?: "Error desconocido"
+
+                _myPatientsUiState.update { currentState ->
+                    val existingList = currentState.paramsHistoryData.toMutableList()
+                    val index = existingList.indexOfFirst { it.patientId == patientId }
+
+                    val errorState = if (index != -1) {
+                        existingList[index].copy(isLoading = false, error = errorMessage)
+                    } else {
+                        PatientParamsHistoryState(
+                            patientId = patientId,
+                            isLoading = false,
+                            error = errorMessage
+                        )
+                    }
+
+                    if (index != -1) {
+                        existingList[index] = errorState
+                    } else {
+                        existingList.add(errorState)
+                    }
+
+                    currentState.copy(paramsHistoryData = existingList)
+                }
+            }
+        }
+    }
+
+    fun loadDosesHistory(patientId: String) {
+        viewModelScope.launch {
+            _myPatientsUiState.update { currentState ->
+                val existingList = currentState.dosesHistoryData.toMutableList()
+                val index = existingList.indexOfFirst { it.patientId == patientId }
+
+                val loadingState = if (index != -1) {
+                    existingList[index].copy(isLoading = true, error = "")
+                } else {
+                    PatientDosesHistoryState(patientId = patientId, isLoading = true, error = "")
+                }
+
+                if (index != -1) existingList[index] = loadingState else existingList.add(
+                    loadingState
+                )
+                currentState.copy(dosesHistoryData = existingList)
+            }
+
+            _patientRepository.getPatientDosesHistory(patientId).onSuccess { data ->
+                _myPatientsUiState.update { currentState ->
+                    val existingList = currentState.dosesHistoryData.toMutableList()
+                    val index = existingList.indexOfFirst { it.patientId == patientId }
+
+                    val successState = PatientDosesHistoryState(
+                        patientId = patientId,
+                        data = data.history,
+                        isLoading = false,
+                        error = ""
+                    )
+
+                    if (index != -1) existingList[index] = successState else existingList.add(
+                        successState
+                    )
+                    currentState.copy(dosesHistoryData = existingList)
+                }
+            }.onFailure { error ->
+                _myPatientsUiState.update { currentState ->
+                    val existingList = currentState.dosesHistoryData.toMutableList()
+                    val index = existingList.indexOfFirst { it.patientId == patientId }
+
+                    val errorState = if (index != -1) {
+                        existingList[index].copy(
+                            isLoading = false,
+                            error = error.message ?: "Error"
+                        )
+                    } else {
+                        PatientDosesHistoryState(
+                            patientId = patientId,
+                            isLoading = false,
+                            error = error.message ?: "Error"
+                        )
+                    }
+
+                    if (index != -1) existingList[index] = errorState else existingList.add(
+                        errorState
+                    )
+                    currentState.copy(dosesHistoryData = existingList)
+                }
+            }
         }
     }
 
@@ -85,9 +200,9 @@ class MyPatientsViewModel(
         viewModelScope.launch {
             _myPatientsUiState.update {
                 it.copy(
-                    updating = true,
+                    updatingParams = true,
                     error = "",
-                    updateSuccessful = false
+                    paramsUpdateSuccessful = false
                 )
             }
             _patientRepository.setPatientParameters(
@@ -99,17 +214,29 @@ class MyPatientsViewModel(
                 )
             ).onSuccess {
                 _myPatientsUiState.update {
+                    val updatedPatients = it.patients.map { patientCard ->
+                        if (patientCard.id == patient.id) {
+                            patientCard.copy(
+                                ratio = patient.ratio.toFloat(),
+                                sensitivity = patient.sensitivity.toFloat(),
+                                targetGlucose = patient.targetGlucose.toFloat()
+                            )
+                        } else {
+                            patientCard
+                        }
+                    }
+
                     it.copy(
-                        loading = false,
-                        updateSuccessful = true,
-                        error = ""
+                        updatingParams = false,
+                        paramsUpdateSuccessful = true,
+                        error = "", patients = updatedPatients
                     )
                 }
             }.onFailure { error ->
                 _myPatientsUiState.update {
                     it.copy(
-                        loading = false,
-                        updateSuccessful = false,
+                        updatingParams = false,
+                        paramsUpdateSuccessful = false,
                         error = error.message!!
                     )
                 }

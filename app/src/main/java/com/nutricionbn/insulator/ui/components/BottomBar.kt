@@ -16,11 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.nutricionbn.insulator.R
 import com.nutricionbn.insulator.ui.routes.AppRoutes
+import com.nutricionbn.insulator.ui.viewModels.UserState
 
 @Composable
 fun InsulatorBottomBar(
     currentRoute: String?,
-    roles: List<String>,
+    user: UserState,
     onNavigateToManagement: () -> Unit,
     onNavigateToCalculation: () -> Unit
 ) {
@@ -46,7 +47,7 @@ fun InsulatorBottomBar(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         //TODO: use an enum or interface
-                        if (roles.contains("ADMINISTRADOR")) {
+                        if (user.isAdmin) {
                             BottomAppBarCustomNavButton(
                                 text = "Inicio",
                                 resId = R.drawable.house_solid_full,
@@ -57,7 +58,7 @@ fun InsulatorBottomBar(
                                 resId = R.drawable.users_solid_full,
                                 handler = onNavigateToManagement
                             )
-                        } else if (roles.contains("MÉDICO")) {
+                        } else if (user.isMedic) {
                             BottomAppBarCustomNavButton(
                                 text = "Inicio",
                                 resId = R.drawable.house_solid_full,

@@ -1,5 +1,7 @@
 package com.nutricionbn.insulator.ui.viewModels.calculation
 
+import com.nutricionbn.insulator.core.data.repositories.calculation.DoseCalculationSnapshot
+
 data class CalculatorParamsUiState(
     val glucose: String = "",
     val carbs: String = "",
@@ -10,15 +12,29 @@ data class CalculatorParamsUiState(
     val dosis: Float = 0f,
     val dosisCorrection: Float = 0f,
     val foodDosis: Float = 0f,
-    val isLoading : Boolean = false,
+    val isLoading: Boolean = false,
     val isPatient: Boolean = false,
 
+    //GENERAL
+    val error: String = "",
+
+    //CONFIRMATION FLOW
+    val showConfirmationButton: Boolean = false,
+    val showUnsavedWarningDialog: Boolean = false,
+    val showPendingSnapshotConfirmationDialog: Boolean = false,
+    val loadingConfirmation: Boolean = false,
+    val loadingConfirmationSuccess: Boolean = false,
+    val loadingConfirmationError: String = "",
+    val lastDoseCalculationSnapshot: DoseCalculationSnapshot?,
+    val loadingPendingSnapshot : Boolean = false,
+    val showDoseCalculationConfirmationDialog: Boolean = false,
+
     //FORM FIELDS VALIDATION
-    val formValidationError : Boolean = true,
-    val showGlucoseError : Boolean = false,
-    val showCarbsError : Boolean = false,
-    val showRatioError : Boolean = false,
-    val showSensError : Boolean = false,
-    val showTargetGlucoseError : Boolean = false,
-    val getParamsError : String = ""
+    val formValidationError: Boolean = true,
+    val showGlucoseError: Boolean = false,
+    val showCarbsError: Boolean = false,
+    val showRatioError: Boolean = false,
+    val showSensError: Boolean = false,
+    val showTargetGlucoseError: Boolean = false,
+    val getParamsError: String = ""
 )
