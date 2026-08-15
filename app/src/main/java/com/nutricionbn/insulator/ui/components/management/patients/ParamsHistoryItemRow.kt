@@ -20,7 +20,7 @@ import com.nutricionbn.insulator.core.data.dto.patient.PatientParamsHistoryRow
 import java.text.SimpleDateFormat
 
 @Composable
-fun HistoryRowItem(item: PatientParamsHistoryRow) {
+fun ParamsHistoryRowItem(item: PatientParamsHistoryRow) {
     val inputDate =
         SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXX", LocalLocale.current.platformLocale)
     val outputDate = SimpleDateFormat("dd/MM/yyyy HH:mm", LocalLocale.current.platformLocale)
@@ -43,7 +43,7 @@ fun HistoryRowItem(item: PatientParamsHistoryRow) {
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
-                text = "Fecha: ${dateString}",
+                text = "Fecha: $dateString",
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Bold
             )

@@ -7,5 +7,11 @@ data class UserState(
     val fullName: String = "",
     val roles: List<String> = listOf(),
     val isLogged: Boolean = false,
-    val isPatient: Boolean = false,
-)
+) {
+    val isPatient: Boolean
+        get() = roles.contains("PACIENTE")
+    val isMedic: Boolean
+        get() = roles.contains("MÉDICO")
+    val isAdmin: Boolean
+        get() = roles.contains("ADMINISTRADOR")
+}

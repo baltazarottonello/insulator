@@ -25,10 +25,9 @@ fun MyPatientsScreen(
     viewModel: MyPatientsViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.myPatientsUiState.collectAsStateWithLifecycle()
-    val paramsHistoryUiState by viewModel.patientParamsHistoryUiState.collectAsStateWithLifecycle()
 
     Scaffold { padding ->
-        if (uiState.loading) {
+        if (uiState.loadingPatients) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
@@ -43,17 +42,26 @@ fun MyPatientsScreen(
         } else {
             LazyColumn(
                 modifier = Modifier
-                    .padding(padding)
-                    .padding(16.dp)
+                    .padding(horizontal = 16.dp),
             ) {
                 items(uiState.patients) { patient ->
                     PatientCard(
-                        updating = uiState.updating,
-                        loadingParamsHistory = paramsHistoryUiState.isLoading,
+                        updatingParams = uiState.updatingParams,
+                        loadingParamsHistory = uiState.paramsHistoryData.find { it.patientId == patient.id }?.isLoading
+                            ?: false,
+                        loadingDosesHistory = uiState.dosesHistoryData.find { it.patientId == patient.id }?.isLoading
+                            ?: false,
                         error = !uiState.error.isEmpty(),
                         errorMessage = uiState.error,
                         patient = patient,
-                        updateSuccessful = uiState.updateSuccessful,
+                        paramsUpdateSuccessful = uiState.paramsUpdateSuccessful,
+                        onDismissParamsUpdateSuccessful = {
+                            viewModel.dismissSuccessMessage {
+                                it.copy(
+                                    paramsUpdateSuccessful = false
+                                )
+                            }
+                        },
                         onSave = { updatedPatient ->
                             viewModel.updatePatientParams(
                                 PatientParams(
@@ -64,8 +72,12 @@ fun MyPatientsScreen(
                                 )
                             )
                         },
-                        onSeePatientParamsHistory = { patient -> viewModel.loadHistory(patient.id) },
-                        historyData = paramsHistoryUiState.data
+                        onSeePatientParamsHistory = { patient -> viewModel.loadParamsHistory(patient.id) },
+                        onSeePatientDosesHistory = { patient -> viewModel.loadDosesHistory(patient.id) },
+                        paramsHistoryData = uiState.paramsHistoryData.find { it.patientId == patient.id }?.data
+                            ?: emptyList(),
+                        dosesHistoryData = uiState.dosesHistoryData.find { it.patientId == patient.id }?.data
+                            ?: emptyList(),
                     )
                 }
             }

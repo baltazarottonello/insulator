@@ -2,6 +2,7 @@ package com.nutricionbn.insulator.core.data.repositories.patients
 
 import com.nutricionbn.insulator.core.data.dto.patient.ParametersResponse
 import com.nutricionbn.insulator.core.data.dto.patient.PatientCard
+import com.nutricionbn.insulator.core.data.dto.patient.PatientDosesHistoryResponse
 import com.nutricionbn.insulator.core.data.dto.patient.PatientParameters
 import com.nutricionbn.insulator.core.data.dto.patient.PatientParamsHistoryResponse
 import com.nutricionbn.insulator.core.data.dto.patient.PatientResponse
@@ -27,7 +28,11 @@ class PatientRepository(private val _patientService: PatientService) {
         return _patientService.setParameters(id, params)
     }
 
-    suspend fun getPatientHistory(id: String): Result<PatientParamsHistoryResponse> {
-        return _patientService.getHistory(id)
+    suspend fun getPatientParamsHistory(id: String): Result<PatientParamsHistoryResponse> {
+        return _patientService.getParamsHistory(id)
+    }
+
+    suspend fun getPatientDosesHistory(id: String): Result<PatientDosesHistoryResponse> {
+        return _patientService.getDosesHistory(id)
     }
 }

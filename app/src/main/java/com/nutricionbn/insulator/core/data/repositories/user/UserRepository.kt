@@ -28,7 +28,6 @@ class UserRepository(
                     fullName = data.user.fullName,
                     roles = data.roles,
                     isLogged = true,
-                    isPatient = data.roles.contains("PACIENTE")
                 )
             )
             _tokenRepository.saveTokens(
