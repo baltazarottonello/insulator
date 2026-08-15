@@ -35,14 +35,17 @@ import com.nutricionbn.insulator.R
 fun PatientSettingsCard(
     modifier: Modifier = Modifier,
     ratio: String,
-    showRatioError: Boolean = false,
-    onRatioChange: (String) -> Unit = {},
+    showRatioError: Boolean,
+    ratioOutOfRange: Boolean,
+    onRatioChange: (String) -> Unit,
     sensitivity: String,
-    showSensError: Boolean = false,
-    onSensitivityChange: (String) -> Unit = {},
+    showSensError: Boolean,
+    sensOutOfRange: Boolean,
+    onSensitivityChange: (String) -> Unit,
     targetGlucose: String,
-    showTargetGlucoseError: Boolean = false,
-    onTargetGlucoseChange: (String) -> Unit = {},
+    showTargetGlucoseError: Boolean,
+    targetGlucoseOutOfRange: Boolean,
+    onTargetGlucoseChange: (String) -> Unit,
     enabled: Boolean,
 ) {
     Card(
@@ -84,15 +87,28 @@ fun PatientSettingsCard(
                     value = ratio,
                     onValueChange = onRatioChange,
                     modifier = Modifier.weight(1f),
-                    isError = showRatioError,
-                    supportingText = if (showRatioError) {
-                        {
-                            Text(
-                                text = "Este campo es obligatorio",
-                                color = MaterialTheme.colorScheme.error
-                            )
+                    isError = showRatioError || ratioOutOfRange,
+                    supportingText = when {
+                        showRatioError -> {
+                            {
+                                Text(
+                                    text = "Este campo es obligatorio",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
                         }
-                    } else null,
+
+                        ratioOutOfRange -> {
+                            {
+                                Text(
+                                    text = "El valor está fuera del rango",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+
+                        else -> null
+                    },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
@@ -103,15 +119,28 @@ fun PatientSettingsCard(
                     value = sensitivity,
                     onValueChange = onSensitivityChange,
                     modifier = Modifier.weight(1f),
-                    isError = showSensError,
-                    supportingText = if (showSensError) {
-                        {
-                            Text(
-                                text = "Este campo es obligatorio",
-                                color = MaterialTheme.colorScheme.error
-                            )
+                    isError = showSensError || sensOutOfRange,
+                    supportingText = when {
+                        showSensError -> {
+                            {
+                                Text(
+                                    text = "Este campo es obligatorio",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
                         }
-                    } else null,
+
+                        sensOutOfRange -> {
+                            {
+                                Text(
+                                    text = "El valor está fuera del rango",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+
+                        else -> null
+                    },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
@@ -126,15 +155,28 @@ fun PatientSettingsCard(
                 value = targetGlucose,
                 onValueChange = onTargetGlucoseChange,
                 modifier = Modifier.fillMaxWidth(),
-                isError = showTargetGlucoseError,
-                supportingText = if (showTargetGlucoseError) {
-                    {
-                        Text(
-                            text = "Este campo es obligatorio",
-                            color = MaterialTheme.colorScheme.error
-                        )
+                isError = showTargetGlucoseError || targetGlucoseOutOfRange,
+                supportingText = when {
+                    showTargetGlucoseError -> {
+                        {
+                            Text(
+                                text = "Este campo es obligatorio",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
-                } else null,
+
+                    targetGlucoseOutOfRange -> {
+                        {
+                            Text(
+                                text = "El valor está fuera del rango",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+
+                    else -> null
+                },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done

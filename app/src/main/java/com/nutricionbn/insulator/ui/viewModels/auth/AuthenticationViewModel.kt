@@ -3,6 +3,7 @@ package com.nutricionbn.insulator.ui.viewModels.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nutricionbn.insulator.core.data.repositories.user.IUserRepository
+import com.nutricionbn.insulator.ui.viewModels.management.patients.SearchUserUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,7 @@ class AuthenticationViewModel(private val _userRepository: IUserRepository) : Vi
 
     fun onGoogleSignInComplete(idToken: String) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            _uiState.update { it.copy(isLoading = true, error = "") }
 
             _userRepository.authenticateWithGoogle(idToken).onSuccess {
                 _uiState.update {
@@ -31,7 +32,7 @@ class AuthenticationViewModel(private val _userRepository: IUserRepository) : Vi
                     it.copy(
                         interactionDisabled = false,
                         isLoading = false,
-                        error = error.message
+                        error = error.message!!
                     )
                 }
             }
@@ -40,6 +41,10 @@ class AuthenticationViewModel(private val _userRepository: IUserRepository) : Vi
 
     fun onSignInError(message: String) {
         _uiState.update { it.copy(error = message, interactionDisabled = false) }
+    }
+
+    fun dismissErrorMessage(updateState: (AuthenticationUiState) -> AuthenticationUiState) {
+        _uiState.update(updateState)
     }
 
     fun onGoogleSignInStarting() {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -25,6 +26,7 @@ import com.nutricionbn.insulator.ui.screens.ManagementScreen
 import com.nutricionbn.insulator.ui.screens.MyPatientsScreen
 import com.nutricionbn.insulator.ui.screens.PatientAssignmentScreen
 import com.nutricionbn.insulator.ui.screens.PatientManagementScreen
+import com.nutricionbn.insulator.ui.screens.UserProfileScreen
 import com.nutricionbn.insulator.ui.theme.InsulatorTheme
 import com.nutricionbn.insulator.ui.viewModels.MainViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -40,13 +42,20 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
+                LaunchedEffect(userState.isLogged) {
+                    if (!userState.isLogged) {
+                        navController.navigate(AppRoutes.Authentication.name) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                }
                 Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
                     InsulatorTopAppBar(
                         currentRoute = currentRoute,
                         userName = userState.fullName,
                         profileImageUrl = userState.avatar,
                         onNavigateToProfile = {
-//                            navController.navigate(AppRoutes.Profile.name)
+                            navController.navigate(AppRoutes.Profile.name)
                         }
                     )
                 }, bottomBar = {
@@ -62,7 +71,7 @@ class MainActivity : ComponentActivity() {
                             onNavigateToCalculation = {
                                 navController.navigate((AppRoutes.Calculation.name))
                             })
-                    } else null
+                    }
                 }) { innerPadding ->
                     Surface(
                         modifier = Modifier
@@ -105,9 +114,9 @@ class MainActivity : ComponentActivity() {
                             composable(route = AppRoutes.MyPatients.name) {
                                 MyPatientsScreen()
                             }
-//                            composable(route = AppRoutes.Profile.name) {
-//                                UserProfileScreen()
-//                            }
+                            composable(route = AppRoutes.Profile.name) {
+                                UserProfileScreen()
+                            }
                         }
                     }
                 }

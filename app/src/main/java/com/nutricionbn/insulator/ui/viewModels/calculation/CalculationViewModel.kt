@@ -202,8 +202,12 @@ class CalculationViewModel(
         }
     }
 
-    fun onErrorDismissed() {
+    fun onErrorDialogDismissed() {
         _uiState.update { it.copy(error = "") }
+    }
+
+    fun dismissErrorMessage(updateState: (CalculatorParamsUiState) -> CalculatorParamsUiState) {
+        _uiState.update(updateState)
     }
 
     fun onWarningDialogDismissed() {
@@ -232,7 +236,9 @@ class CalculationViewModel(
     fun onCalculateClicked() {
         _uiState.update {
             it.copy(
-                loadingConfirmationSuccess = false, showDoseCalculationConfirmationDialog = false
+                loadingConfirmationSuccess = false,
+                showDoseCalculationConfirmationDialog = false,
+                showDoseResultCard = false
             )
         }
         val invalidCalculationData = validateDosisCalculationValues()
@@ -242,6 +248,12 @@ class CalculationViewModel(
         }
 
         calculateDosis()
+
+        _uiState.update {
+            it.copy(
+                showDoseResultCard = true
+            )
+        }
 
         if (uiState.value.isPatient) {
             viewModelScope.launch {
@@ -350,6 +362,7 @@ class CalculationViewModel(
             0f
         }
 
+
         var finalDosis = round((foodDosis + dosisCorrection) * 2) / 2
         if (finalDosis < 0f) finalDosis = 0f
 
@@ -368,12 +381,15 @@ class CalculationViewModel(
         }
     }
 
+
     fun validateDosisCalculationValues(): Boolean {
-        val isGlucoseEmpty = _uiState.value.glucose.isEmpty()
-        val isCarbsEmpty = _uiState.value.carbs.isEmpty()
-        val isRatioEmpty = _uiState.value.ratio.isEmpty()
-        val isSensEmpty = _uiState.value.sensitivity.isEmpty()
-        val isTargetGlucoseEmpty = _uiState.value.targetGlucose.isEmpty()
+        val state = _uiState.value
+
+        val isGlucoseEmpty = state.glucose.isEmpty()
+        val isCarbsEmpty = state.carbs.isEmpty()
+        val isRatioEmpty = state.ratio.isEmpty()
+        val isSensEmpty = state.sensitivity.isEmpty()
+        val isTargetGlucoseEmpty = state.targetGlucose.isEmpty()
 
         if (isGlucoseEmpty || isCarbsEmpty || isRatioEmpty || isSensEmpty || isTargetGlucoseEmpty) {
             _uiState.update {
@@ -389,7 +405,56 @@ class CalculationViewModel(
             return true
         }
 
-        return false;
+        val glucose = state.glucose.toFloatOrNull() ?: 0f
+        val carbs = state.carbs.toFloatOrNull() ?: 0f
+        val targetGlucose = state.targetGlucose.toFloatOrNull() ?: 0f
+        val ratio = state.ratio.toFloatOrNull() ?: 0f
+        val sensitivity = state.sensitivity.toFloatOrNull() ?: 0f
+
+        val minBloodGlucose = 40f
+        val maxBloodGlucose = 600f
+        val minTargetGlucose = 70f
+        val maxTargetGlucose = 250f
+        val maxSafeCarbs = 300f
+
+
+        val isBloodGlucoseUnsafe = glucose !in minBloodGlucose..maxBloodGlucose
+        val isTargetGlucoseUnsafe = targetGlucose !in minTargetGlucose..maxTargetGlucose
+        val isCarbsInvalid = carbs !in 0f..maxSafeCarbs
+        val isRatioInvalid = ratio <= 0f || ratio > 100f
+        val isSensInvalid = sensitivity <= 0f || sensitivity > 300f
+
+        if (isBloodGlucoseUnsafe || isCarbsInvalid || isTargetGlucoseUnsafe || isRatioInvalid || isSensInvalid) {
+            _uiState.update {
+                it.copy(
+                    formValidationError = true,
+                    glucoseOutOfRange = isBloodGlucoseUnsafe,
+                    carbsOutOfRange = isCarbsInvalid,
+                    targetGlucoseOutOfRange = isTargetGlucoseUnsafe,
+                    ratioOutOfRange = isRatioInvalid,
+                    sensOutOfRange = isSensInvalid
+                )
+            }
+            return true
+        }
+
+        _uiState.update {
+            it.copy(
+                formValidationError = false,
+                showGlucoseError = false,
+                showCarbsError = false,
+                showRatioError = false,
+                showSensError = false,
+                showTargetGlucoseError = false,
+                glucoseOutOfRange = false,
+                carbsOutOfRange = false,
+                targetGlucoseOutOfRange = false,
+                ratioOutOfRange = false,
+                sensOutOfRange = false
+            )
+        }
+
+        return false
     }
 
     @OptIn(ExperimentalTime::class)

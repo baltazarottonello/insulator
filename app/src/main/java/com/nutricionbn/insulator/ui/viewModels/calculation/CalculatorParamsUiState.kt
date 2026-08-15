@@ -14,6 +14,7 @@ data class CalculatorParamsUiState(
     val foodDosis: Float = 0f,
     val isLoading: Boolean = false,
     val isPatient: Boolean = false,
+    val showDoseResultCard: Boolean = false,
 
     //GENERAL
     val error: String = "",
@@ -26,15 +27,20 @@ data class CalculatorParamsUiState(
     val loadingConfirmationSuccess: Boolean = false,
     val loadingConfirmationError: String = "",
     val lastDoseCalculationSnapshot: DoseCalculationSnapshot?,
-    val loadingPendingSnapshot : Boolean = false,
+    val loadingPendingSnapshot: Boolean = false,
     val showDoseCalculationConfirmationDialog: Boolean = false,
 
     //FORM FIELDS VALIDATION
-    val formValidationError: Boolean = true,
+    val formValidationError: Boolean = false,
     val showGlucoseError: Boolean = false,
     val showCarbsError: Boolean = false,
     val showRatioError: Boolean = false,
     val showSensError: Boolean = false,
     val showTargetGlucoseError: Boolean = false,
+    val glucoseOutOfRange: Boolean = false,
+    val carbsOutOfRange: Boolean = false,
+    val ratioOutOfRange: Boolean = false,
+    val sensOutOfRange: Boolean = false,
+    val targetGlucoseOutOfRange: Boolean = false,
     val getParamsError: String = ""
 )

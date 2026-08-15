@@ -10,15 +10,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nutricionbn.insulator.R
+import kotlinx.coroutines.delay
 
 @Composable
-fun ErrorBox(text: String) {
+fun ErrorBox(
+    text: String, durationMillis: Long = 4000L,
+    onDismiss: () -> Unit
+) {
+
+    LaunchedEffect(Unit) {
+        delay(durationMillis)
+        onDismiss()
+    }
+
     Surface(
         color = MaterialTheme.colorScheme.errorContainer,
         shape = RoundedCornerShape(12.dp),

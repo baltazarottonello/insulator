@@ -52,8 +52,10 @@ fun CalculationScreen(
         AutoCalculatedParams(
             glucose = uiState.glucose,
             showGlucoseError = uiState.showGlucoseError,
+            glucoseOutOfRange = uiState.glucoseOutOfRange,
             carbs = uiState.carbs,
             showCarbsError = uiState.showCarbsError,
+            carbsOutOfRange = uiState.carbsOutOfRange,
             onGlucoseChange = { viewModel.onGlucoseChanged(it) },
             onCarbsChange = { viewModel.onCarbsChanged(newValue = it) },
         )
@@ -76,11 +78,14 @@ fun CalculationScreen(
                 PatientSettingsCard(
                     ratio = uiState.ratio,
                     showRatioError = uiState.showRatioError,
+                    ratioOutOfRange = uiState.ratioOutOfRange,
                     onRatioChange = { viewModel.onRatioChanged(it) },
                     sensitivity = uiState.sensitivity,
                     showSensError = uiState.showSensError,
+                    sensOutOfRange = uiState.sensOutOfRange,
                     onSensitivityChange = { viewModel.onSensitivityChanged(it) },
                     targetGlucose = uiState.targetGlucose,
+                    targetGlucoseOutOfRange = uiState.targetGlucoseOutOfRange,
                     showTargetGlucoseError = uiState.showTargetGlucoseError,
                     onTargetGlucoseChange = { viewModel.onTargetGlucoseChanged(it) },
                     enabled = !uiState.isPatient
@@ -104,12 +109,13 @@ fun CalculationScreen(
                     showConfirmationButton = uiState.showConfirmationButton,
                     loadingDoseConfirmation = uiState.loadingConfirmation,
                     loadingConfirmationError = uiState.loadingConfirmationError,
+                    onDismissErrorMessage = { viewModel.dismissErrorMessage { it.copy(error = "") }},
                     confirmationLoadingSuccess = uiState.loadingConfirmationSuccess,
                     showConfirmationDialog = uiState.showDoseCalculationConfirmationDialog,
                     isPatient = uiState.isPatient
                 )
             } else {
-                ErrorBox(uiState.getParamsError)
+                ErrorBox(uiState.getParamsError, onDismiss = {})
             }
         }
         DosisResult(
@@ -117,7 +123,7 @@ fun CalculationScreen(
             dosis = uiState.dosis,
             correction = uiState.dosisCorrection,
             food = uiState.foodDosis,
-            formValidationError = uiState.formValidationError
+            showResultCard = uiState.showDoseResultCard,
         )
         BottomMessage()
     }
@@ -159,7 +165,7 @@ fun CalculationScreen(
     if (uiState.error.isNotEmpty()) {
         AlertDialog(
             onDismissRequest = {
-                viewModel.onErrorDismissed()
+                viewModel.onErrorDialogDismissed()
             },
             title = {
                 Text(text = uiState.error)
@@ -170,7 +176,7 @@ fun CalculationScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.onErrorDismissed()
+                        viewModel.onErrorDialogDismissed()
                     }
                 ) {
                     Text("OK")

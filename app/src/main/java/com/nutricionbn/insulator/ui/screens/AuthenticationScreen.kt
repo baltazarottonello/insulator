@@ -86,6 +86,7 @@ fun AuthenticationScreen(
                         isSuccess = uiState.isSuccess,
                         interactionDisabled = uiState.interactionDisabled,
                         error = uiState.error,
+                        onDismissErrorMessage = { viewModel.dismissErrorMessage { it.copy(error = "") }},
                         onGoogleSignInClick = {
                             coroutineScope.launch {
                                 try {

@@ -22,12 +22,13 @@ import com.nutricionbn.insulator.ui.viewModels.calculation.CalculationViewModel
 import com.nutricionbn.insulator.ui.viewModels.management.ManagementViewModel
 import com.nutricionbn.insulator.ui.viewModels.management.patients.MyPatientsViewModel
 import com.nutricionbn.insulator.ui.viewModels.management.patients.SearchUserViewModel
+import com.nutricionbn.insulator.ui.viewModels.profile.UserProfileViewModel
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
@@ -54,7 +55,7 @@ val appModule = module {
     }
 
     //viewModels
-    //viewModelOf(::UserProfileViewModel)
+    viewModelOf(::UserProfileViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::AuthenticationViewModel)
     viewModelOf(::CalculationViewModel)

@@ -25,10 +25,12 @@ import com.nutricionbn.insulator.R
 
 @Composable
 fun AutoCalculatedParams(
-    glucose : String,
+    glucose: String,
     showGlucoseError: Boolean,
+    glucoseOutOfRange: Boolean,
     carbs: String,
     showCarbsError: Boolean,
+    carbsOutOfRange: Boolean,
     onGlucoseChange: (String) -> Unit,
     onCarbsChange: (String) -> Unit
 ) {
@@ -68,15 +70,28 @@ fun AutoCalculatedParams(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Number
                 ),
-                isError = showGlucoseError,
-                supportingText = if (showGlucoseError) {
-                    {
-                        Text(
-                            text = "Este campo es obligatorio",
-                            color = MaterialTheme.colorScheme.error
-                        )
+                isError = showGlucoseError || glucoseOutOfRange,
+                supportingText = when {
+                    showGlucoseError -> {
+                        {
+                            Text(
+                                text = "Este campo es obligatorio",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
-                } else null,
+
+                    glucoseOutOfRange -> {
+                        {
+                            Text(
+                                text = "El valor está fuera del rango",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+
+                    else -> null
+                }
             )
 
             OutlinedTextField(
@@ -101,15 +116,28 @@ fun AutoCalculatedParams(
                     imeAction = ImeAction.Done,
                     keyboardType = KeyboardType.Number
                 ),
-                isError = showCarbsError,
-                supportingText = if (showCarbsError) {
-                    {
-                        Text(
-                            text = "Este campo es obligatorio",
-                            color = MaterialTheme.colorScheme.error
-                        )
+                isError = showCarbsError || carbsOutOfRange,
+                supportingText = when {
+                    showCarbsError -> {
+                        {
+                            Text(
+                                text = "Este campo es obligatorio",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
-                } else null,
+
+                    carbsOutOfRange -> {
+                        {
+                            Text(
+                                text = "El valor está fuera del rango",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+
+                    else -> null
+                }
             )
         }
     }
