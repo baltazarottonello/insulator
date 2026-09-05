@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -26,7 +25,12 @@ import com.nutricionbn.insulator.ui.routes.AppRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InsulatorTopAppBar(currentRoute : String?,userName: String, profileImageUrl: String, onNavigateToProfile:() -> Unit) {
+fun InsulatorTopAppBar(
+    currentRoute: String?,
+    userName: String,
+    profileImageUrl: String,
+    onNavigateToProfile: () -> Unit
+) {
     TopAppBar(
         title = {
             Row(
@@ -39,12 +43,12 @@ fun InsulatorTopAppBar(currentRoute : String?,userName: String, profileImageUrl:
                     tint = MaterialTheme.colorScheme.onSecondary
                 )
                 Text(
-                    stringResource(R.string.app_name),
+                    checkIfRouteNameShouldAppearInTopBar(currentRoute) ?: "Insulator",
                     style = MaterialTheme.typography.displayLarge, fontWeight = FontWeight.Bold
                 )
             }
         }, actions = {
-            if (profileImageUrl != "" && currentRoute != AppRoutes.Authentication.name ) {
+            if (profileImageUrl != "" && currentRoute != AppRoutes.Authentication.name) {
                 IconButton(onClick = onNavigateToProfile) {
                     AsyncImage(
                         model = profileImageUrl,
@@ -63,4 +67,14 @@ fun InsulatorTopAppBar(currentRoute : String?,userName: String, profileImageUrl:
             titleContentColor = MaterialTheme.colorScheme.onSecondary
         )
     )
+}
+
+fun checkIfRouteNameShouldAppearInTopBar(currentRoute: String?): String? {
+    val appRoute = AppRoutes.fromRoute(currentRoute)
+
+    return if (appRoute?.showInTopBar == true) {
+        appRoute.title
+    } else {
+        null
+    }
 }

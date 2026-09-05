@@ -30,6 +30,7 @@ fun DoseCalculation(
     showConfirmationButton: Boolean,
     loadingDoseConfirmation: Boolean,
     loadingConfirmationError: String,
+    onDismissErrorMessage: () -> Unit,
     confirmationLoadingSuccess: Boolean,
     isPatient: Boolean,
     showConfirmationDialog: Boolean,
@@ -107,7 +108,7 @@ fun DoseCalculation(
                     Text("Confirmar dosis")
                 }
                 if (!loadingConfirmationError.isEmpty()) {
-                    ErrorBox(loadingConfirmationError)
+                    ErrorBox(loadingConfirmationError, onDismiss = onDismissErrorMessage)
                 }
             }
         }

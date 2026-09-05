@@ -24,7 +24,8 @@ import com.nutricionbn.insulator.ui.components.ErrorBox
 @Composable
 fun Authentication(
     isSuccess: Boolean,
-    error: String?,
+    error: String,
+    onDismissErrorMessage: () -> Unit,
     onGoogleSignInClick: () -> Unit,
     interactionDisabled: Boolean,
 ) {
@@ -58,10 +59,8 @@ fun Authentication(
             }
         } else null
 
-        error?.let { errorText ->
-            if (error != "") {
-                ErrorBox(text = errorText)
-            } else null
-        }
+        if (error.isNotEmpty()) {
+            ErrorBox(text = error, onDismiss = onDismissErrorMessage)
+        } else null
     }
 }

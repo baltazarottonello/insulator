@@ -30,20 +30,20 @@ import java.util.Locale
 
 @Composable
 fun DosisResult(
-    dosis: Float,
-    correction: Float,
-    food: Float,
-    formValidationError: Boolean,
+    dosis: Float?,
+    correction: Float?,
+    food: Float?,
+    showResultCard: Boolean,
     paramsError: String
 ) {
     AnimatedContent(
-        targetState = formValidationError,
+        targetState = showResultCard,
         transitionSpec = {
             fadeIn() togetherWith fadeOut()
         },
-        label = "DosisErrorFallbackTransition"
-    ) { error ->
-        if (!error) {
+        label = "ShowResultCardTransition"
+    ) { showResultCard ->
+        if (showResultCard) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()

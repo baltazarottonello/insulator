@@ -5,6 +5,8 @@ data class UserState(
     val email: String = "",
     val avatar: String = "",
     val fullName: String = "",
+    val firstName: String = "",
+    val lastName: String = "",
     val roles: List<String> = listOf(),
     val isLogged: Boolean = false,
 ) {

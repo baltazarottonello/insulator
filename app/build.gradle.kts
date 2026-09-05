@@ -9,7 +9,7 @@ plugins {
 android {
     namespace = "com.nutricionbn.insulator"
     compileSdk {
-        version = release(36) {
+        version = release(37) {
             minorApiLevel = 1
         }
     }
@@ -17,9 +17,9 @@ android {
     defaultConfig {
         applicationId = "com.nutricionbn.insulator"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,6 +27,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -81,34 +82,33 @@ android {
 dependencies {
     // TODO : use catalog
     //DataStore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.2.1")
     //Google Auth
     implementation("androidx.credentials:credentials:1.6.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.6.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.2.0")
     // Koin
-    implementation("io.insert-koin:koin-android:3.5.6")
-    implementation("io.insert-koin:koin-androidx-compose:3.5.6")
+    implementation("io.insert-koin:koin-android:4.2.2")
+    implementation("io.insert-koin:koin-androidx-compose:4.2.2")
     //Ktor
-    implementation("io.ktor:ktor-client-android:2.3.9")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.9")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.9")
+    implementation("io.ktor:ktor-client-android:3.5.2")
+    implementation("io.ktor:ktor-client-content-negotiation:3.5.2")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.5.2")
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.runtime)
-    implementation(libs.kotlinx.serialization.json)
     //Navigation
-    implementation("androidx.navigation:navigation-compose:2.9.8")
-    implementation("androidx.navigation:navigation-fragment:2.9.8")
-    implementation("androidx.navigation:navigation-ui:2.9.8")
+    implementation("androidx.navigation:navigation-compose:2.10.0")
+    implementation("androidx.navigation:navigation-fragment:2.10.0")
+    implementation("androidx.navigation:navigation-ui:2.10.0")
     // Feature module support for Fragments
-    implementation("androidx.navigation:navigation-dynamic-features-fragment:2.9.8")
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:2.10.0")
     // Testing Navigation
-    androidTestImplementation("androidx.navigation:navigation-testing:2.9.8")
+    androidTestImplementation("androidx.navigation:navigation-testing:2.10.0")
     // JSON serialization library, works with the Kotlin serialization plugin
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
     //Coil
-    implementation("io.coil-kt.coil3:coil-compose:3.4.0")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.4.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.6.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.6.0")
     //////////////////////////////////////////////////
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

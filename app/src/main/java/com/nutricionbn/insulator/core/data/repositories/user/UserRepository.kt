@@ -2,6 +2,8 @@ package com.nutricionbn.insulator.core.data.repositories.user
 
 import com.nutricionbn.insulator.core.data.dto.auth.LoginResponse
 import com.nutricionbn.insulator.core.data.dto.user.AssignableUserResponse
+import com.nutricionbn.insulator.core.data.dto.user.DeleteUserDataRequest
+import com.nutricionbn.insulator.core.data.dto.user.UpdateUserProfileDataRequest
 import com.nutricionbn.insulator.core.data.repositories.tokens.TokenRepository
 import com.nutricionbn.insulator.core.services.auth.IAuthService
 import com.nutricionbn.insulator.core.services.user.UserService
@@ -26,6 +28,8 @@ class UserRepository(
                     email = data.user.email,
                     avatar = data.user.avatar,
                     fullName = data.user.fullName,
+                    firstName = data.user.firstName,
+                    lastName = data.user.lastName,
                     roles = data.roles,
                     isLogged = true,
                 )
@@ -52,5 +56,13 @@ class UserRepository(
     override suspend fun assignAsAPatient(user: AssignableUser): Result<Any> {
         val hasBeenPatient = !user.patientId.isNullOrEmpty()
         return _userService.assignUserAsAPatient(user.id, hasBeenPatient);
+    }
+
+    override suspend fun updateProfileData(data: UpdateUserProfileDataRequest): Result<Any> {
+        return _userService.saveProfileData(data)
+    }
+
+    override suspend fun deleteUserData(): Result<Any> {
+        return _userService.deleteUserData()
     }
 }

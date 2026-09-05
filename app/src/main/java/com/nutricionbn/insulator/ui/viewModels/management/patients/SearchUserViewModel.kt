@@ -98,4 +98,8 @@ class SearchUserViewModel(
     fun dismissSuccessMessage(updateState: (SearchUserUiState) -> SearchUserUiState) {
         _searchUserUiState.update(updateState)
     }
+
+    fun dismissErrorMessage(updateState: (SearchUserUiState) -> SearchUserUiState) {
+        _searchUserUiState.update(updateState)
+    }
 }

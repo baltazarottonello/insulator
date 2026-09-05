@@ -37,6 +37,7 @@ import com.nutricionbn.insulator.core.data.dto.patient.PatientCard
 import com.nutricionbn.insulator.core.data.dto.patient.PatientDoseHistoryRow
 import com.nutricionbn.insulator.core.data.dto.patient.PatientParamsHistoryRow
 import com.nutricionbn.insulator.ui.components.ErrorBox
+import com.nutricionbn.insulator.ui.components.GenericToast
 import com.nutricionbn.insulator.ui.components.SuccessMessage
 
 @Composable
@@ -161,7 +162,7 @@ fun PatientCard(
                             onDismiss = onDismissParamsUpdateSuccessful
                         )
                     } else if (error) {
-                        ErrorBox(errorMessage)
+                        ErrorBox(errorMessage, onDismiss = {})
                     } else {
                         if (!isChanged && isFormValid) {
                             Text(
@@ -263,6 +264,8 @@ fun PatientCard(
                         Column(modifier = Modifier.padding(top = 8.dp)) {
                             if (loadingDosesHistory) {
                                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                            } else if (dosesHistoryData.isEmpty()) {
+                                GenericToast("El paciente aún no ha confirmado ninguna dosis")
                             } else {
                                 dosesHistoryData.forEach { row ->
                                     DoseHistoryRowItem(
