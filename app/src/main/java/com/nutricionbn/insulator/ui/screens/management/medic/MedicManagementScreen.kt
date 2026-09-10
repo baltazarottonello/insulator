@@ -1,4 +1,4 @@
-package com.nutricionbn.insulator.ui.screens
+package com.nutricionbn.insulator.ui.screens.management.medic
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,14 +9,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nutricionbn.insulator.ui.components.management.ManagementDashboard
-import com.nutricionbn.insulator.ui.viewModels.management.ManagementViewModel
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ManagementScreen(
-    viewModel: ManagementViewModel = koinViewModel(),
-    onNavigateToPatientsManagement: () -> Unit
+fun MedicManagementScreen(
+    onNavigateToPatientsManagementScreen: () -> Unit
 ) {
     val scrollState = rememberScrollState()
 
@@ -27,6 +23,6 @@ fun ManagementScreen(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.Center
     ) {
-        ManagementDashboard(onNavigateToPatientsManagement)
+        MedicManagementDashboardScreen(onNavigateToPatientsManagementScreen)
     }
 }

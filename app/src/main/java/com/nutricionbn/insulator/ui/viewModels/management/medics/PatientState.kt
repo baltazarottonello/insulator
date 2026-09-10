@@ -1,4 +1,4 @@
-package com.nutricionbn.insulator.ui.viewModels.management.patients
+package com.nutricionbn.insulator.ui.viewModels.management.medics
 
 data class PatientParams(
     val id: String = "",

@@ -1,4 +1,4 @@
-package com.nutricionbn.insulator.ui.screens
+package com.nutricionbn.insulator.ui.screens.management.medic
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,12 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nutricionbn.insulator.ui.components.management.patients.PatientCard
-import com.nutricionbn.insulator.ui.viewModels.management.patients.MyPatientsViewModel
-import com.nutricionbn.insulator.ui.viewModels.management.patients.PatientParams
+import com.nutricionbn.insulator.ui.viewModels.management.medics.MyPatientsViewModel
+import com.nutricionbn.insulator.ui.viewModels.management.medics.PatientParams
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MyPatientsScreen(
+fun MedicPatientsScreen(
     viewModel: MyPatientsViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.myPatientsUiState.collectAsStateWithLifecycle()
