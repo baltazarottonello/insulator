@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,11 +21,14 @@ import com.nutricionbn.insulator.ui.components.InsulatorTopAppBar
 import com.nutricionbn.insulator.ui.routes.AppRoutes
 import com.nutricionbn.insulator.ui.screens.AuthenticationScreen
 import com.nutricionbn.insulator.ui.screens.CalculationScreen
-import com.nutricionbn.insulator.ui.screens.ManagementScreen
-import com.nutricionbn.insulator.ui.screens.MyPatientsScreen
-import com.nutricionbn.insulator.ui.screens.PatientAssignmentScreen
-import com.nutricionbn.insulator.ui.screens.PatientManagementScreen
 import com.nutricionbn.insulator.ui.screens.UserProfileScreen
+import com.nutricionbn.insulator.ui.screens.management.medic.MedicManagementScreen
+import com.nutricionbn.insulator.ui.screens.management.medic.MedicPatientAssignmentScreen
+import com.nutricionbn.insulator.ui.screens.management.medic.MedicPatientManagementScreen
+import com.nutricionbn.insulator.ui.screens.management.medic.MedicPatientsScreen
+import com.nutricionbn.insulator.ui.screens.management.patient.PatientManagementScreen
+import com.nutricionbn.insulator.ui.screens.management.patient.PatientMedicAssignmentScreen
+import com.nutricionbn.insulator.ui.screens.management.patient.PatientMedicManagementScreen
 import com.nutricionbn.insulator.ui.theme.InsulatorTheme
 import com.nutricionbn.insulator.ui.viewModels.MainViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -42,13 +44,6 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
-                LaunchedEffect(userState.isLogged) {
-                    if (!userState.isLogged) {
-                        navController.navigate(AppRoutes.Authentication.name) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    }
-                }
                 Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
                     InsulatorTopAppBar(
                         currentRoute = currentRoute,
@@ -63,11 +58,17 @@ class MainActivity : ComponentActivity() {
                         InsulatorBottomBar(
                             currentRoute = currentRoute,
                             user = userState,
-                            onNavigateToManagement = {
+                            onNavigateToMedicManagement = {
                                 navController.navigate(
-                                    AppRoutes.Management.name
+                                    AppRoutes.MedicManagementDashboard.name
                                 )
                             },
+                            onNavigateToPatientManagement = {
+                                navController.navigate(
+                                    AppRoutes.PatientManagementDashboard.name
+                                )
+                            },
+                            onNavigateToAdminManagement = {},
                             onNavigateToCalculation = {
                                 navController.navigate((AppRoutes.Calculation.name))
                             })
@@ -80,7 +81,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = AppRoutes.Authentication.name,
+                            startDestination = if (userState.isLogged) AppRoutes.Calculation.name else AppRoutes.Authentication.name,
                             modifier = Modifier.padding(innerPadding)
                         ) {
                             composable(route = AppRoutes.Authentication.name) {
@@ -96,24 +97,44 @@ class MainActivity : ComponentActivity() {
                             composable(route = AppRoutes.Calculation.name) {
                                 CalculationScreen()
                             }
-                            composable(route = AppRoutes.Management.name) {
-                                ManagementScreen(onNavigateToPatientsManagement = {
-                                    navController.navigate(AppRoutes.PatientsManagement.name)
+                            // MEDIC MANAGEMENT
+                            composable(route = AppRoutes.MedicManagementDashboard.name) {
+                                MedicManagementScreen(onNavigateToPatientsManagementScreen = {
+                                    navController.navigate(AppRoutes.MedicPatientsManagement.name)
                                 })
                             }
-                            composable(route = AppRoutes.PatientsManagement.name) {
-                                PatientManagementScreen(onNavigateToPatientAssignmentScreen = {
-                                    navController.navigate(AppRoutes.PatientAssignment.name)
+                            composable(route = AppRoutes.MedicPatientsManagement.name) {
+                                MedicPatientManagementScreen(onNavigateToPatientAssignmentScreen = {
+                                    navController.navigate(AppRoutes.MedicPatientAssignment.name)
                                 }, onNavigateToMyPatientsScreen = {
-                                    navController.navigate(AppRoutes.MyPatients.name)
+                                    navController.navigate(AppRoutes.MedicPatients.name)
                                 })
                             }
-                            composable(route = AppRoutes.PatientAssignment.name) {
-                                PatientAssignmentScreen()
+                            composable(route = AppRoutes.MedicPatientAssignment.name) {
+                                MedicPatientAssignmentScreen()
                             }
-                            composable(route = AppRoutes.MyPatients.name) {
-                                MyPatientsScreen()
+                            composable(route = AppRoutes.MedicPatients.name) {
+                                MedicPatientsScreen()
                             }
+                            // PATIENT MANAGEMENT
+                            composable(route = AppRoutes.PatientManagementDashboard.name) {
+                                PatientManagementScreen(onNavigateToMedicsManagement = {
+                                    navController.navigate(AppRoutes.PatientMedicsManagement.name)
+                                })
+                            }
+                            composable(route = AppRoutes.PatientMedicsManagement.name) {
+                                PatientMedicManagementScreen(onNavigateToMedicAssignmentScreen = {
+                                    navController.navigate(AppRoutes.PatientMedicsAssignment.name)
+                                })
+                            }
+                            composable(route = AppRoutes.PatientMedicsAssignment.name) {
+                                PatientMedicAssignmentScreen(onNavigateAway = {
+                                    navController.navigate(AppRoutes.Calculation.name) {
+                                        popUpTo(AppRoutes.Calculation.name) { inclusive = true }
+                                    }
+                                })
+                            }
+                            //PROFILE
                             composable(route = AppRoutes.Profile.name) {
                                 UserProfileScreen()
                             }

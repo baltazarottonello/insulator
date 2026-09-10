@@ -1,4 +1,4 @@
-package com.nutricionbn.insulator.ui.viewModels.management.patients
+package com.nutricionbn.insulator.ui.viewModels.management.medics
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

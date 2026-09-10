@@ -3,7 +3,6 @@ package com.nutricionbn.insulator.ui.viewModels.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nutricionbn.insulator.core.data.repositories.user.IUserRepository
-import com.nutricionbn.insulator.ui.viewModels.management.patients.SearchUserUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

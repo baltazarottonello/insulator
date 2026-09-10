@@ -1,4 +1,4 @@
-package com.nutricionbn.insulator.ui.components.management
+package com.nutricionbn.insulator.ui.screens.management.medic
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ManagementDashboard(toPatientsManagement: () -> Unit) {
+fun MedicManagementDashboardScreen(toPatientsManagement: () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Row() {
             Button(modifier = Modifier.width(250.dp), onClick = toPatientsManagement) {

@@ -22,7 +22,9 @@ import com.nutricionbn.insulator.ui.viewModels.UserState
 fun InsulatorBottomBar(
     currentRoute: String?,
     user: UserState,
-    onNavigateToManagement: () -> Unit,
+    onNavigateToMedicManagement: () -> Unit,
+    onNavigateToPatientManagement: () -> Unit,
+    onNavigateToAdminManagement: () -> Unit,
     onNavigateToCalculation: () -> Unit
 ) {
     if (currentRoute != AppRoutes.Authentication.name) {
@@ -54,10 +56,17 @@ fun InsulatorBottomBar(
                                 handler = onNavigateToCalculation
                             )
                             BottomAppBarCustomNavButton(
-                                text = "Gestión",
-                                resId = R.drawable.users_solid_full,
-                                handler = onNavigateToManagement
+                                text = "Admin",
+                                resId = R.drawable.user_tie_solid_full,
+                                handler = onNavigateToAdminManagement
                             )
+                            if (user.isMedic) {
+                                BottomAppBarCustomNavButton(
+                                    text = "Gestión",
+                                    resId = R.drawable.users_solid_full,
+                                    handler = onNavigateToMedicManagement
+                                )
+                            }
                         } else if (user.isMedic) {
                             BottomAppBarCustomNavButton(
                                 text = "Inicio",
@@ -67,11 +76,20 @@ fun InsulatorBottomBar(
                             BottomAppBarCustomNavButton(
                                 text = "Gestión",
                                 resId = R.drawable.users_solid_full,
-                                handler = onNavigateToManagement
+                                handler = onNavigateToMedicManagement
                             )
-                        } else {
-                            null
-                        }
+                        } else if (user.isPatient) {
+                            BottomAppBarCustomNavButton(
+                                text = "Inicio",
+                                resId = R.drawable.house_solid_full,
+                                handler = onNavigateToCalculation
+                            )
+                            BottomAppBarCustomNavButton(
+                                text = "Gestión",
+                                resId = R.drawable.users_solid_full,
+                                handler = onNavigateToPatientManagement
+                            )
+                        } else null
                     }
                 }
             }

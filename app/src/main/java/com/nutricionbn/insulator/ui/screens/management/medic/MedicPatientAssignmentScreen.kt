@@ -1,4 +1,4 @@
-package com.nutricionbn.insulator.ui.screens
+package com.nutricionbn.insulator.ui.screens.management.medic
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,12 +22,12 @@ import com.nutricionbn.insulator.ui.components.ErrorBox
 import com.nutricionbn.insulator.ui.components.SuccessMessage
 import com.nutricionbn.insulator.ui.components.management.patients.EmailSearchBar
 import com.nutricionbn.insulator.ui.components.management.patients.PotentialPatientCard
-import com.nutricionbn.insulator.ui.viewModels.management.patients.SearchUserUiState
-import com.nutricionbn.insulator.ui.viewModels.management.patients.SearchUserViewModel
+import com.nutricionbn.insulator.ui.viewModels.management.medics.SearchUserUiState
+import com.nutricionbn.insulator.ui.viewModels.management.medics.SearchUserViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PatientAssignmentScreen(viewModel: SearchUserViewModel = koinViewModel()) {
+fun MedicPatientAssignmentScreen(viewModel: SearchUserViewModel = koinViewModel()) {
     val uiState: SearchUserUiState by viewModel.searchUserUiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

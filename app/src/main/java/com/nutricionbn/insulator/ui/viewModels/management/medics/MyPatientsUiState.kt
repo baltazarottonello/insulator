@@ -1,4 +1,4 @@
-package com.nutricionbn.insulator.ui.viewModels.management.patients
+package com.nutricionbn.insulator.ui.viewModels.management.medics
 
 import com.nutricionbn.insulator.core.data.dto.patient.PatientCard
 import com.nutricionbn.insulator.core.data.dto.patient.PatientDoseHistoryRow

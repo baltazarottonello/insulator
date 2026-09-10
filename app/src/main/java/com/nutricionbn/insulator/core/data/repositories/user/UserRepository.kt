@@ -2,13 +2,12 @@ package com.nutricionbn.insulator.core.data.repositories.user
 
 import com.nutricionbn.insulator.core.data.dto.auth.LoginResponse
 import com.nutricionbn.insulator.core.data.dto.user.AssignableUserResponse
-import com.nutricionbn.insulator.core.data.dto.user.DeleteUserDataRequest
 import com.nutricionbn.insulator.core.data.dto.user.UpdateUserProfileDataRequest
 import com.nutricionbn.insulator.core.data.repositories.tokens.TokenRepository
 import com.nutricionbn.insulator.core.services.auth.IAuthService
 import com.nutricionbn.insulator.core.services.user.UserService
 import com.nutricionbn.insulator.ui.viewModels.UserState
-import com.nutricionbn.insulator.ui.viewModels.management.patients.AssignableUser
+import com.nutricionbn.insulator.ui.viewModels.management.medics.AssignableUser
 
 class UserRepository(
     private val _authService: IAuthService,

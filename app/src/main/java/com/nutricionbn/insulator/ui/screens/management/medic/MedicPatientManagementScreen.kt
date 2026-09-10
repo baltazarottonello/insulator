@@ -1,4 +1,4 @@
-package com.nutricionbn.insulator.ui.screens
+package com.nutricionbn.insulator.ui.screens.management.medic
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PatientManagementScreen(
+fun MedicPatientManagementScreen(
     onNavigateToPatientAssignmentScreen: () -> Unit,
     onNavigateToMyPatientsScreen: () -> Unit
 ) {
