@@ -108,11 +108,9 @@ fun CalculationScreen(
                     },
                     showConfirmationButton = uiState.showConfirmationButton,
                     loadingDoseConfirmation = uiState.loadingConfirmation,
-                    loadingConfirmationError = uiState.loadingConfirmationError,
-                    onDismissErrorMessage = { viewModel.dismissErrorMessage { it.copy(error = "") }},
                     confirmationLoadingSuccess = uiState.loadingConfirmationSuccess,
                     showConfirmationDialog = uiState.showDoseCalculationConfirmationDialog,
-                    isPatient = uiState.isPatient
+                    isPatient = uiState.isPatient,
                 )
             } else {
                 ErrorBox(uiState.getParamsError, onDismiss = {})

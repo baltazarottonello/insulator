@@ -22,15 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nutricionbn.insulator.R
 import com.nutricionbn.insulator.ui.components.DoseConfirmationDialog
-import com.nutricionbn.insulator.ui.components.ErrorBox
 import com.nutricionbn.insulator.ui.components.SuccessMessage
 
 @Composable
 fun DoseCalculation(
     showConfirmationButton: Boolean,
     loadingDoseConfirmation: Boolean,
-    loadingConfirmationError: String,
-    onDismissErrorMessage: () -> Unit,
     confirmationLoadingSuccess: Boolean,
     isPatient: Boolean,
     showConfirmationDialog: Boolean,
@@ -106,9 +103,6 @@ fun DoseCalculation(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Confirmar dosis")
-                }
-                if (!loadingConfirmationError.isEmpty()) {
-                    ErrorBox(loadingConfirmationError, onDismiss = onDismissErrorMessage)
                 }
             }
         }

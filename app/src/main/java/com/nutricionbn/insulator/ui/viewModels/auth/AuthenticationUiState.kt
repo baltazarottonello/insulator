@@ -5,4 +5,8 @@ data class AuthenticationUiState(
     val error : String = "",
     val isSuccess: Boolean = false,
     val interactionDisabled : Boolean = false,
+
+    //DEMO
+    val demoUsername: String = "",
+    val demoPassword: String = "",
 )

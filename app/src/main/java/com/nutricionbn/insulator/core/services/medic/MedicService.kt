@@ -35,7 +35,7 @@ class MedicService(private val client: HttpClient, private val tokenRepository: 
                 Result.failure(Exception("Error al obtener médicos"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de red"))
         }
     }
 
@@ -57,7 +57,7 @@ class MedicService(private val client: HttpClient, private val tokenRepository: 
                 Result.failure(Exception("Error al desvincular médico"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de red"))
         }
     }
 }

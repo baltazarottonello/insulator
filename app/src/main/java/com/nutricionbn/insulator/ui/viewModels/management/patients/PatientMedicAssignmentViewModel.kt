@@ -85,7 +85,15 @@ class PatientMedicAssignmentViewModel(
                     _patientMedicAssignmentUiState.update { it.copy(shouldNavigateAway = true) }
                 }
             }
-                .onFailure { error -> _patientMedicAssignmentUiState.update { it.copy(error = error.message!!) } }
+                .onFailure { error ->
+                    _patientMedicAssignmentUiState.update {
+                        it.copy(
+                            error = error.message!!,
+                            showUnlinkMedicConfirmationModal = false,
+                            modalLoading = false
+                        )
+                    }
+                }
         }
     }
 
@@ -103,5 +111,9 @@ class PatientMedicAssignmentViewModel(
                 showUnlinkMedicSuccessModal = false
             )
         }
+    }
+
+    fun onErrorDialogDismissed() {
+        _patientMedicAssignmentUiState.update { it.copy(error = "") }
     }
 }

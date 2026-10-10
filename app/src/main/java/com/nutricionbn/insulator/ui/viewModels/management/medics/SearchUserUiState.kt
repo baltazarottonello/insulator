@@ -4,7 +4,7 @@ data class SearchUserUiState(
     val userLoaded: Boolean = false,
     val user: AssignableUser = AssignableUser(),
     val isLoading: Boolean = false,
-    val error: String? = "",
+    val error: String = "",
     val patientAssignmentSuccess: Boolean = false,
     val assigningPatient: Boolean = false,
 )

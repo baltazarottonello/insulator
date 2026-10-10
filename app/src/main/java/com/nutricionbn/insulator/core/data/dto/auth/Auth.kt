@@ -22,3 +22,8 @@ data class LoginResponse(
     @SerialName("user") val user: UserProfile,
     @SerialName("roles") val roles: List<String>
 )
+@Serializable
+data class DemoUserCredentials(
+    @SerialName("email") val email: String,
+    @SerialName("password") val password: String,
+)

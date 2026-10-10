@@ -25,7 +25,7 @@ class SearchUserViewModel(
             _searchUserUiState.update {
                 it.copy(
                     isLoading = true,
-                    error = null,
+                    error = "",
                     userLoaded = false,
                 )
             }
@@ -48,7 +48,7 @@ class SearchUserViewModel(
                 }.onFailure { error ->
                     _searchUserUiState.update {
                         it.copy(
-                            error = error.message,
+                            error = error.message!!,
                             isLoading = false
                         )
                     }
@@ -87,7 +87,7 @@ class SearchUserViewModel(
                     it.copy(
                         userLoaded = false,
                         assigningPatient = false,
-                        error = if (error.message.isNullOrEmpty()) "Error inesperado" else error.message,
+                        error = error.message!!,
                         patientAssignmentSuccess = false
                     )
                 }
@@ -95,11 +95,13 @@ class SearchUserViewModel(
         }
     }
 
+    fun onErrorDialogDismissed() {
+        _searchUserUiState.update { it.copy(error = "") }
+    }
+
+
     fun dismissSuccessMessage(updateState: (SearchUserUiState) -> SearchUserUiState) {
         _searchUserUiState.update(updateState)
     }
 
-    fun dismissErrorMessage(updateState: (SearchUserUiState) -> SearchUserUiState) {
-        _searchUserUiState.update(updateState)
-    }
 }

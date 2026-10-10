@@ -47,7 +47,7 @@ class UserService(
                 Result.failure(Exception("Error al obtener usuario"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de red"))
         }
     }
 

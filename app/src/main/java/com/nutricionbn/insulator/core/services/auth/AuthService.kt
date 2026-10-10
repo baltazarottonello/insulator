@@ -1,6 +1,7 @@
 package com.nutricionbn.insulator.core.services.auth
 
 import com.nutricionbn.insulator.BuildConfig
+import com.nutricionbn.insulator.core.data.dto.auth.DemoUserCredentials
 import com.nutricionbn.insulator.core.data.dto.auth.GoogleLoginRequest
 import com.nutricionbn.insulator.core.data.dto.auth.LoginResponse
 import io.ktor.client.HttpClient
@@ -24,6 +25,25 @@ class AuthService(
                     header("X-App", BuildConfig.X_APP_HEADER)
                     contentType(ContentType.Application.Json)
                     setBody(GoogleLoginRequest(token = idToken))
+                }
+            if (response.status.isSuccess()) {
+                val responseBody: LoginResponse = response.body();
+                Result.success(responseBody)
+            } else {
+                Result.failure(Exception("Error de servidor: código ${response.status.value}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(Exception("Error de conexión"))
+        }
+    }
+
+    override suspend fun authenticateForDemo(credentials: DemoUserCredentials): Result<LoginResponse> {
+        return try {
+            val response: HttpResponse =
+                client.post(urlString = BuildConfig.WORKER_URL + BuildConfig.AUTH_ROUTE + "/demo") {
+                    header("X-App", BuildConfig.X_APP_HEADER)
+                    contentType(ContentType.Application.Json)
+                    setBody(credentials)
                 }
             if (response.status.isSuccess()) {
                 val responseBody: LoginResponse = response.body();

@@ -10,6 +10,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -40,6 +43,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: MainViewModel = koinViewModel()
             val userState by viewModel.userState.collectAsStateWithLifecycle()
+            var showDemoModal by remember { mutableStateOf(false) }
             InsulatorTheme {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -51,7 +55,8 @@ class MainActivity : ComponentActivity() {
                         profileImageUrl = userState.avatar,
                         onNavigateToProfile = {
                             navController.navigate(AppRoutes.Profile.name)
-                        }
+                        },
+                        onSecretTap = { showDemoModal = true }
                     )
                 }, bottomBar = {
                     if (userState.isLogged) {
@@ -85,14 +90,18 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.padding(innerPadding)
                         ) {
                             composable(route = AppRoutes.Authentication.name) {
-                                AuthenticationScreen(onNavigateToCalculation = {
-                                    navController.navigate(AppRoutes.Calculation.name)
-                                    {
-                                        popUpTo(
-                                            AppRoutes.Authentication.name
-                                        ) { inclusive = true }
-                                    }
-                                })
+                                AuthenticationScreen(
+                                    onNavigateToCalculation = {
+                                        navController.navigate(AppRoutes.Calculation.name)
+                                        {
+                                            popUpTo(
+                                                AppRoutes.Authentication.name
+                                            ) { inclusive = true }
+                                        }
+                                    },
+                                    showDemoModal = showDemoModal,
+                                    onDismissDemoModal = { showDemoModal = false },
+                                )
                             }
                             composable(route = AppRoutes.Calculation.name) {
                                 CalculationScreen()

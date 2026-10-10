@@ -6,8 +6,8 @@ import com.nutricionbn.insulator.core.data.dto.patient.PatientParamsHistoryRow
 
 data class MyPatientsUiState(
     val patients: List<PatientCard> = listOf<PatientCard>(),
-    val paramsHistoryData: List<PatientParamsHistoryState> = emptyList(),
-    val dosesHistoryData: List<PatientDosesHistoryState> = emptyList(),
+    val paramsHistoryStates: List<PatientParamsHistoryState> = emptyList(),
+    val dosesHistoryStates: List<PatientDosesHistoryState> = emptyList(),
     val error: String = "",
     val loadingPatients: Boolean = false,
     val showDoseObservationsModal: Boolean = false,

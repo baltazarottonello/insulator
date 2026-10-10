@@ -1,5 +1,6 @@
 package com.nutricionbn.insulator.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.nutricionbn.insulator.R
 import com.nutricionbn.insulator.ui.routes.AppRoutes
@@ -27,11 +29,16 @@ fun InsulatorBottomBar(
     onNavigateToAdminManagement: () -> Unit,
     onNavigateToCalculation: () -> Unit
 ) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    val currentHeight = if (isLandscape) 60.dp else 100.dp
+
     if (currentRoute != AppRoutes.Authentication.name) {
         BottomAppBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp),
+                .height(currentHeight),
             containerColor = MaterialTheme.colorScheme.secondary,
             contentColor = MaterialTheme.colorScheme.onSecondary,
             contentPadding = PaddingValues(0.dp),
