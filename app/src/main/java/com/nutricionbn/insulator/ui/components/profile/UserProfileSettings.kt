@@ -46,7 +46,6 @@ fun UserProfileSettings(
     showSaveChangesSuccessModal: Boolean,
     onDismissSaveChangesSuccessModal: () -> Unit,
     modalLoading: Boolean,
-    errorMessage: String,
 ) {
     val isFormValid = firstName.isNotBlank() && lastName.isNotBlank()
 
@@ -85,10 +84,6 @@ fun UserProfileSettings(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
-
-            if (errorMessage.isNotBlank()) {
-                ErrorBox(errorMessage, onDismiss = {})
-            }
 
             Button(
                 onClick = onSaveClick,

@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.nutricionbn.insulator.ui.components.ErrorBox
 import com.nutricionbn.insulator.ui.components.SuccessMessage
 import com.nutricionbn.insulator.ui.components.management.patients.EmailSearchBar
 import com.nutricionbn.insulator.ui.components.management.patients.PotentialPatientCard
@@ -59,10 +61,27 @@ fun MedicPatientAssignmentScreen(viewModel: SearchUserViewModel = koinViewModel(
                 loading = uiState.assigningPatient,
                 onAssignClick = { viewModel.onAssignAsPatient(uiState.user) }
             )
-        } else if (uiState.error != "") {
-            ErrorBox(
-                uiState.error!!,
-                onDismiss = { viewModel.dismissErrorMessage { it.copy(error = "") } })
+        } else if (uiState.error.isNotBlank()) {
+            AlertDialog(
+                onDismissRequest = {
+                    viewModel.onErrorDialogDismissed()
+                },
+                title = {
+                    Text(text = uiState.error)
+                },
+                text = {
+                    Text(text = "Algo salió mal al momento de procesar la solicitud, usuario no encontrado o no disponible")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.onErrorDialogDismissed()
+                        }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
         } else if (uiState.patientAssignmentSuccess) {
             SuccessMessage(
                 text = "Paciente asignado con éxito",

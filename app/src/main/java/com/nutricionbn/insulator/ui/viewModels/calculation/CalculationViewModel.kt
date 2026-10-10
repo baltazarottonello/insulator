@@ -206,10 +206,6 @@ class CalculationViewModel(
         _uiState.update { it.copy(error = "") }
     }
 
-    fun dismissErrorMessage(updateState: (CalculatorParamsUiState) -> CalculatorParamsUiState) {
-        _uiState.update(updateState)
-    }
-
     fun onWarningDialogDismissed() {
         _uiState.update { it.copy(showUnsavedWarningDialog = false) }
         onDiscardDose()
@@ -300,10 +296,11 @@ class CalculationViewModel(
             }.onFailure { error ->
                 _uiState.update {
                     it.copy(
+                        showDoseCalculationConfirmationDialog = false,
                         loadingConfirmation = false,
                         loadingConfirmationSuccess = false,
                         showUnsavedWarningDialog = false,
-                        loadingConfirmationError = error.message!!
+                        error = error.message!!
                     )
                 }
             }
@@ -323,6 +320,7 @@ class CalculationViewModel(
             }.onFailure {
                 _uiState.update {
                     it.copy(
+                        loadingPendingSnapshot = false,
                         error = "Error al confirmar dosis"
                     )
                 }

@@ -2,6 +2,7 @@ package com.nutricionbn.insulator.ui.viewModels.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nutricionbn.insulator.core.data.dto.auth.DemoUserCredentials
 import com.nutricionbn.insulator.core.data.repositories.user.IUserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,5 +49,37 @@ class AuthenticationViewModel(private val _userRepository: IUserRepository) : Vi
 
     fun onGoogleSignInStarting() {
         _uiState.update { it.copy(interactionDisabled = true) }
+    }
+
+    fun updateDemoUsername(value: String) {
+        _uiState.update {
+            it.copy(demoUsername = value)
+        }
+    }
+
+    fun updateDemoPassword(value: String) {
+        _uiState.update {
+            it.copy(demoPassword = value)
+        }
+    }
+
+    fun onDemoLogin() {
+        _uiState.update { it.copy(isLoading = true, error = "") }
+        viewModelScope.launch {
+            _userRepository.authenticateForDemo(
+                DemoUserCredentials(
+                    email = _uiState.value.demoUsername,
+                    password = _uiState.value.demoPassword
+                )
+            ).onSuccess { _uiState.update { it.copy(isLoading = false) } }
+                .onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = error.message!!
+                        )
+                    }
+                }
+        }
     }
 }

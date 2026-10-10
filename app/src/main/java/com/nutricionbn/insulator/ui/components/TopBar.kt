@@ -1,6 +1,8 @@
 package com.nutricionbn.insulator.ui.components
 
 import android.util.Log
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -12,6 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,15 +35,31 @@ fun InsulatorTopAppBar(
     currentRoute: String?,
     userName: String,
     profileImageUrl: String,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    onSecretTap: () -> Unit
 ) {
+    var clickCount by remember { mutableIntStateOf(0) }
+
     TopAppBar(
         title = {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    modifier = Modifier.size(50.dp),
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            if (currentRoute == AppRoutes.Authentication.name) {
+                                clickCount++
+                                if (clickCount >= 7) {
+                                    onSecretTap()
+                                    clickCount = 0
+                                }
+                            }
+                        },
                     painter = painterResource(R.drawable.calculator_solid_full),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSecondary

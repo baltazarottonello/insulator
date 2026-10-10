@@ -46,7 +46,7 @@ class PatientService(
                 Result.failure(Exception("Error al obtener pacientes, paciente no asignado o no existe"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de red"))
         }
     }
 
@@ -69,7 +69,7 @@ class PatientService(
                 Result.failure(Exception("Error al obtener pacientes, paciente no asignado o no existe"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de red"))
         }
     }
 
@@ -92,7 +92,7 @@ class PatientService(
                 Result.failure(Exception("Error al obtener parámetros del paciente"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de red"))
         }
     }
 
@@ -124,7 +124,7 @@ class PatientService(
                 Result.failure(Exception("Error al obtener parámetros del paciente"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de red"))
         }
     }
 
@@ -147,7 +147,7 @@ class PatientService(
                 Result.failure(Exception("Error al obtener historial de parámetros del paciente"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de red"))
         }
     }
 
@@ -170,7 +170,7 @@ class PatientService(
                 Result.failure(Exception("Error al obtener historial de dosis del paciente"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Error de red: ${e.message}"))
+            Result.failure(Exception("Error de red"))
         }
     }
 }

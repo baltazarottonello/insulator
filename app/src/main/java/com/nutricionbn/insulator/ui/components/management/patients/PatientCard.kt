@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -20,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,27 +36,26 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.nutricionbn.insulator.R
 import com.nutricionbn.insulator.core.data.dto.patient.PatientCard
-import com.nutricionbn.insulator.core.data.dto.patient.PatientDoseHistoryRow
-import com.nutricionbn.insulator.core.data.dto.patient.PatientParamsHistoryRow
-import com.nutricionbn.insulator.ui.components.ErrorBox
 import com.nutricionbn.insulator.ui.components.GenericToast
 import com.nutricionbn.insulator.ui.components.SuccessMessage
+import com.nutricionbn.insulator.ui.viewModels.management.medics.PatientDosesHistoryState
+import com.nutricionbn.insulator.ui.viewModels.management.medics.PatientParamsHistoryState
 
 @Composable
 fun PatientCard(
     paramsUpdateSuccessful: Boolean,
-    error: Boolean,
-    errorMessage: String,
     updatingParams: Boolean,
     loadingParamsHistory: Boolean,
     loadingDosesHistory: Boolean,
-    paramsHistoryData: List<PatientParamsHistoryRow>,
-    dosesHistoryData: List<PatientDoseHistoryRow>,
+    paramsHistoryState: PatientParamsHistoryState,
+    dosesHistoryState: PatientDosesHistoryState,
     patient: PatientCard,
     onSave: (PatientCard) -> Unit,
     onSeePatientParamsHistory: (PatientCard) -> Unit,
     onSeePatientDosesHistory: (PatientCard) -> Unit,
     onDismissParamsUpdateSuccessful: () -> Unit,
+    onPatientParamsDataErrorDialogDismissed: (patientId: String) -> Unit,
+    onPatientDosesDataErrorDialogDismissed: (patientId: String) -> Unit
 ) {
     var patientCardExpanded by remember { mutableStateOf(false) }
     var patientParamsHistoryExpanded by remember { mutableStateOf(false) }
@@ -75,6 +76,54 @@ fun PatientCard(
     val isFormValid = isSensitivityValid && isRatioValid && isTargetGlucoseValid
 
     val interactionSource = remember { MutableInteractionSource() }
+
+    if (paramsHistoryState.error.isNotBlank()) {
+        AlertDialog(
+            onDismissRequest = {
+                onPatientParamsDataErrorDialogDismissed(patient.id)
+            },
+            title = {
+                Text(text = paramsHistoryState.error)
+            },
+            text = {
+                Text(text = "Algo salió mal al momento de procesar la solicitud")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick =
+                        {
+                            onPatientParamsDataErrorDialogDismissed(patient.id)
+                        }
+                ) {
+                    Text("OK")
+                }
+            }
+        )
+    }
+
+    if (dosesHistoryState.error.isNotBlank()) {
+        AlertDialog(
+            onDismissRequest = {
+                onPatientDosesDataErrorDialogDismissed(patient.id)
+            },
+            title = {
+                Text(text = paramsHistoryState.error)
+            },
+            text = {
+                Text(text = "Algo salió mal al momento de procesar la solicitud")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick =
+                        {
+                            onPatientDosesDataErrorDialogDismissed(patient.id)
+                        }
+                ) {
+                    Text("OK")
+                }
+            }
+        )
+    }
 
     Card(
         modifier = Modifier
@@ -161,8 +210,6 @@ fun PatientCard(
                             "Parámetros cargados con éxito!",
                             onDismiss = onDismissParamsUpdateSuccessful
                         )
-                    } else if (error) {
-                        ErrorBox(errorMessage, onDismiss = {})
                     } else {
                         if (!isChanged && isFormValid) {
                             Text(
@@ -203,7 +250,7 @@ fun PatientCard(
                             .fillMaxWidth()
                             .clickable {
                                 patientParamsHistoryExpanded = !patientParamsHistoryExpanded
-                                if (patientParamsHistoryExpanded && paramsHistoryData.isEmpty() && !loadingParamsHistory) {
+                                if (patientParamsHistoryExpanded && paramsHistoryState.data.isEmpty() && !loadingParamsHistory) {
                                     onSeePatientParamsHistory(patient)
                                 }
                             },
@@ -227,8 +274,10 @@ fun PatientCard(
                         Column(modifier = Modifier.padding(top = 8.dp)) {
                             if (loadingParamsHistory) {
                                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                            } else if (paramsHistoryState.data.isEmpty()) {
+                                GenericToast("El paciente aún no tiene parámetros cargados")
                             } else {
-                                paramsHistoryData.forEach { row ->
+                                paramsHistoryState.data.forEach { row ->
                                     ParamsHistoryRowItem(row)
                                 }
                             }
@@ -240,7 +289,7 @@ fun PatientCard(
                             .fillMaxWidth()
                             .clickable {
                                 patientDosesHistoryExpanded = !patientDosesHistoryExpanded
-                                if (patientDosesHistoryExpanded && dosesHistoryData.isEmpty() && !loadingDosesHistory) {
+                                if (patientDosesHistoryExpanded && dosesHistoryState.data.isEmpty() && !loadingDosesHistory) {
                                     onSeePatientDosesHistory(patient)
                                 }
                             },
@@ -264,10 +313,10 @@ fun PatientCard(
                         Column(modifier = Modifier.padding(top = 8.dp)) {
                             if (loadingDosesHistory) {
                                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                            } else if (dosesHistoryData.isEmpty()) {
+                            } else if (dosesHistoryState.data.isEmpty()) {
                                 GenericToast("El paciente aún no ha confirmado ninguna dosis")
                             } else {
-                                dosesHistoryData.forEach { row ->
+                                dosesHistoryState.data.forEach { row ->
                                     DoseHistoryRowItem(
                                         item = row
                                     )

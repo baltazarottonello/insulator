@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.nutricionbn.insulator.ui.components.ErrorBox
 import com.nutricionbn.insulator.ui.components.management.medics.MedicCard
 import com.nutricionbn.insulator.ui.viewModels.management.patients.PatientMedicAssignmentViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -37,7 +38,26 @@ fun PatientMedicAssignmentScreen(
 
     Scaffold { padding ->
         if (uiState.error.isNotBlank()) {
-            ErrorBox(uiState.error, onDismiss = {})
+            AlertDialog(
+                onDismissRequest = {
+                    viewModel.onErrorDialogDismissed()
+                },
+                title = {
+                    Text(text = uiState.error)
+                },
+                text = {
+                    Text(text = "Algo salió mal al momento de procesar la solicitud")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.onErrorDialogDismissed()
+                        }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
         }
         if (uiState.loading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

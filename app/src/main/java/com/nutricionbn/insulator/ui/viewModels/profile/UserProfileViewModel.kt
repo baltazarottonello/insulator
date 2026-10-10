@@ -2,7 +2,6 @@ package com.nutricionbn.insulator.ui.viewModels.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nutricionbn.insulator.core.data.dto.user.DeleteUserDataRequest
 import com.nutricionbn.insulator.core.data.dto.user.UpdateUserProfileDataRequest
 import com.nutricionbn.insulator.core.data.repositories.tokens.TokenRepository
 import com.nutricionbn.insulator.core.data.repositories.user.SessionRepository
@@ -88,6 +87,10 @@ class UserProfileViewModel(
 
     fun onSaveDismiss() {
         _uiState.update { it.copy(showSaveChangesConfirmationModal = false) }
+    }
+
+    fun onErrorDialogDismissed() {
+        _uiState.update { it.copy(error = "") }
     }
 
     fun onDismissSaveChangesSuccessModal() {

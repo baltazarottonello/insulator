@@ -63,10 +63,65 @@ class MyPatientsViewModel(
         }
     }
 
+
+    fun onPatientParamsDataErrorDialogDismissed(patientId: String) {
+        _myPatientsUiState.update { currentState ->
+            val existingList = currentState.paramsHistoryStates.toMutableList()
+            val index = existingList.indexOfFirst { it.patientId == patientId }
+
+            val errorState = if (index != -1) {
+                existingList[index].copy(isLoading = false, error = "")
+            } else {
+                PatientParamsHistoryState(
+                    patientId = patientId,
+                    isLoading = false,
+                    error = ""
+                )
+            }
+
+            if (index != -1) {
+                existingList[index] = errorState
+            } else {
+                existingList.add(errorState)
+            }
+
+            currentState.copy(paramsHistoryStates = existingList)
+        }
+    }
+
+    fun onPatientDosesDataErrorDialogDismissed(patientId: String) {
+        _myPatientsUiState.update { currentState ->
+            val existingList = currentState.dosesHistoryStates.toMutableList()
+            val index = existingList.indexOfFirst { it.patientId == patientId }
+
+            val errorState = if (index != -1) {
+                existingList[index].copy(isLoading = false, error = "")
+            } else {
+                PatientDosesHistoryState(
+                    patientId = patientId,
+                    isLoading = false,
+                    error = ""
+                )
+            }
+
+            if (index != -1) {
+                existingList[index] = errorState
+            } else {
+                existingList.add(errorState)
+            }
+
+            currentState.copy(dosesHistoryStates = existingList)
+        }
+    }
+
+    fun onErrorDialogDismissed() {
+        _myPatientsUiState.update { it.copy(error = "") }
+    }
+
     fun loadParamsHistory(patientId: String) {
         viewModelScope.launch {
             _myPatientsUiState.update { currentState ->
-                val existingList = currentState.paramsHistoryData.toMutableList()
+                val existingList = currentState.paramsHistoryStates.toMutableList()
                 val index = existingList.indexOfFirst { it.patientId == patientId }
 
                 val loadingState = if (index != -1) {
@@ -81,7 +136,7 @@ class MyPatientsViewModel(
                     existingList.add(loadingState)
                 }
 
-                currentState.copy(paramsHistoryData = existingList)
+                currentState.copy(paramsHistoryStates = existingList)
             }
 
 
@@ -94,7 +149,7 @@ class MyPatientsViewModel(
                 )
 
                 _myPatientsUiState.update { currentState ->
-                    val existingList = currentState.paramsHistoryData.toMutableList()
+                    val existingList = currentState.paramsHistoryStates.toMutableList()
                     val index = existingList.indexOfFirst { it.patientId == patientId }
 
                     if (index != -1) {
@@ -103,13 +158,13 @@ class MyPatientsViewModel(
                         existingList.add(updatedParamsHistoryState)
                     }
 
-                    currentState.copy(paramsHistoryData = existingList)
+                    currentState.copy(paramsHistoryStates = existingList)
                 }
             }.onFailure { error ->
                 val errorMessage = error.message ?: "Error desconocido"
 
                 _myPatientsUiState.update { currentState ->
-                    val existingList = currentState.paramsHistoryData.toMutableList()
+                    val existingList = currentState.paramsHistoryStates.toMutableList()
                     val index = existingList.indexOfFirst { it.patientId == patientId }
 
                     val errorState = if (index != -1) {
@@ -128,7 +183,7 @@ class MyPatientsViewModel(
                         existingList.add(errorState)
                     }
 
-                    currentState.copy(paramsHistoryData = existingList)
+                    currentState.copy(paramsHistoryStates = existingList)
                 }
             }
         }
@@ -137,7 +192,7 @@ class MyPatientsViewModel(
     fun loadDosesHistory(patientId: String) {
         viewModelScope.launch {
             _myPatientsUiState.update { currentState ->
-                val existingList = currentState.dosesHistoryData.toMutableList()
+                val existingList = currentState.dosesHistoryStates.toMutableList()
                 val index = existingList.indexOfFirst { it.patientId == patientId }
 
                 val loadingState = if (index != -1) {
@@ -149,12 +204,12 @@ class MyPatientsViewModel(
                 if (index != -1) existingList[index] = loadingState else existingList.add(
                     loadingState
                 )
-                currentState.copy(dosesHistoryData = existingList)
+                currentState.copy(dosesHistoryStates = existingList)
             }
 
             _patientRepository.getPatientDosesHistory(patientId).onSuccess { data ->
                 _myPatientsUiState.update { currentState ->
-                    val existingList = currentState.dosesHistoryData.toMutableList()
+                    val existingList = currentState.dosesHistoryStates.toMutableList()
                     val index = existingList.indexOfFirst { it.patientId == patientId }
 
                     val successState = PatientDosesHistoryState(
@@ -167,11 +222,11 @@ class MyPatientsViewModel(
                     if (index != -1) existingList[index] = successState else existingList.add(
                         successState
                     )
-                    currentState.copy(dosesHistoryData = existingList)
+                    currentState.copy(dosesHistoryStates = existingList)
                 }
             }.onFailure { error ->
                 _myPatientsUiState.update { currentState ->
-                    val existingList = currentState.dosesHistoryData.toMutableList()
+                    val existingList = currentState.dosesHistoryStates.toMutableList()
                     val index = existingList.indexOfFirst { it.patientId == patientId }
 
                     val errorState = if (index != -1) {
@@ -190,7 +245,7 @@ class MyPatientsViewModel(
                     if (index != -1) existingList[index] = errorState else existingList.add(
                         errorState
                     )
-                    currentState.copy(dosesHistoryData = existingList)
+                    currentState.copy(dosesHistoryStates = existingList)
                 }
             }
         }

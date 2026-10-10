@@ -4,6 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,7 +36,6 @@ fun UserProfileScreen(
             firstName = uiState.name,
             lastName = uiState.lastName,
             modalLoading = uiState.modalLoading,
-            errorMessage = uiState.error,
             onFirstNameChanged = { newName -> viewModel.onFirstNameChanged(newName) },
             onLastNameChanged = { newLastName -> viewModel.onLastNameChanged(newLastName) },
             email = uiState.email,
@@ -56,6 +58,29 @@ fun UserProfileScreen(
                 }
             },
             onSignOutDismiss = { viewModel.onSignOutDismiss() }
+        )
+    }
+
+    if (uiState.error.isNotBlank()) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.onErrorDialogDismissed()
+            },
+            title = {
+                Text(text = uiState.error)
+            },
+            text = {
+                Text(text = "Algo salió mal al momento de procesar la solicitud")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.onErrorDialogDismissed()
+                    }
+                ) {
+                    Text("OK")
+                }
+            }
         )
     }
 }

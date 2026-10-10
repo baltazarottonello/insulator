@@ -1,5 +1,6 @@
 package com.nutricionbn.insulator.core.data.repositories.user
 
+import com.nutricionbn.insulator.core.data.dto.auth.DemoUserCredentials
 import com.nutricionbn.insulator.core.data.dto.auth.LoginResponse
 import com.nutricionbn.insulator.core.data.dto.user.AssignableUserResponse
 import com.nutricionbn.insulator.core.data.dto.user.UpdateUserProfileDataRequest
@@ -48,7 +49,7 @@ class UserRepository(
         return if (user != null) {
             Result.success(user)
         } else {
-            Result.failure(Exception("El usuario es paciente de otro médico o no existe"))
+            Result.failure(Exception("No se encontró un usuario disponible"))
         }
     }
 
@@ -63,5 +64,30 @@ class UserRepository(
 
     override suspend fun deleteUserData(): Result<Any> {
         return _userService.deleteUserData()
+    }
+
+    override suspend fun authenticateForDemo(credentials: DemoUserCredentials): Result<LoginResponse> {
+        val result = _authService.authenticateForDemo(credentials)
+
+        result.onSuccess { data ->
+            _sessionRepository.updateState(
+                UserState(
+                    id = data.user.id,
+                    email = data.user.email,
+                    avatar = data.user.avatar,
+                    fullName = data.user.fullName,
+                    firstName = data.user.firstName,
+                    lastName = data.user.lastName,
+                    roles = data.roles,
+                    isLogged = true,
+                )
+            )
+            _tokenRepository.saveTokens(
+                accessToken = data.accessToken,
+                refreshToken = data.refreshToken
+            )
+        }
+
+        return result;
     }
 }

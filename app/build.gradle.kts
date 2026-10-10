@@ -18,7 +18,7 @@ android {
         applicationId = "com.nutricionbn.insulator"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1
+        versionCode = 5
         versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -48,6 +48,10 @@ android {
             buildConfigField("String", "AUTH_ROUTE", "\"$authRoute\"")
             buildConfigField("String", "PATIENTS_ROUTE", "\"$patientsRoute\"")
             buildConfigField("String", "MEDICS_ROUTE", "\"$medicRoute\"")
+
+            ndk.debugSymbolLevel = "FULL"
+
+
         }
 
         debug {
